@@ -1,0 +1,178 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read" class="animated fadeIn">
+  <div class="card card-default">
+      <div class="card-header">
+          <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+          <div class="card-header-actions">
+              <div class="col">
+                <div class="float-right">
+                    <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+                        style="float: right;">Find PlayerID</button>
+
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="card-body">
+
+          <div class="form-group">
+              <div class="border bg-light">
+                  <div class="row mx-md-n2">
+                      <div class="col px-md-2">
+                          <div class="p-3">
+                              <form [formGroup]="searchParamsForm">
+                                  <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Player ID</label>
+                                        <input type="text" class="form-control" formControlName="userId"
+                                             placeholder="Player ID" [(ngModel)]="userID">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Game</label>
+                                        <div>
+                                            <select class="form-select form-control form-control-sm"
+                                                formControlName="game_name">
+                                                <option value="">--SELECT--</option>
+                                                <option value="RUMMY">Rummy</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                      <div class="col">
+                                          <label  class="form-label">From Date</label>
+                                          <input type="date" class="form-control" formControlName="fromTime"
+                                               placeholder="">
+                                      </div>
+
+                                      <div class="col">
+                                          <label class="form-label">To Date</label>
+                                          <input type="date" class="form-control" formControlName="toTime"
+                                               placeholder="">
+                                      </div>
+                                      <div class="col p-4">
+                                          <button type="button" class="btn btn-success float-right"
+                                              (click)="getOpponentPlayedTogetherReports()"  [disabled]="!searchParamsForm.valid">Submit</button>
+                                      </div>
+                                  </div>
+                                  
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="card card-default">
+      <div class="card-header">
+          <div class="row">
+              <div class="col">
+                  <i class="fa fa-align-justify"></i> Opponent Played Together Report
+              </div>
+          </div>
+      </div>
+
+      <div *ngIf="showReportModal" class="card-body overflow">
+      <h4> Player userID : <a style=" cursor: pointer; color: royalblue;padding-left: 5px;padding-right:5px" (click)="getUserDetail('userID',userID)">{{userID}}</a>   </h4>
+      <br>
+      <br>
+        <table class="table table-striped" >
+            <thead>
+              <th style="width: 150px;">Opponent userID</th>
+              <th>TotalGames</th>
+              <th>GamesWon</th>
+              <th>GamesLost</th>
+              <th>AmountWon</th>
+              <th>AmountLost</th>
+              <th >GameIds</th>
+
+            </thead>
+            <tbody>
+              <tr *ngFor="let response of responseData">
+                <td style=" cursor: pointer; color: royalblue;padding-left: 5px;padding-right:5px" (click)="getUserDetail('userID',response.key)">{{response.key}}</td>
+                <td>{{response.value.totalGames}}</td>
+                <td>{{response.value.gamesWon}}</td>
+                <td>{{response.value.gamesLost}}</td>
+                <td>{{response.value.amountWon}}</td>
+                <td>{{response.value.amountLost}}</td>
+                <td (click)="viewGameIds(response.value.gameIds,response.key)"><button type="button" class="btn btn-success float-right">View GameIds</button><p hidden>{{response.value.gameIds}}</p></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <mat-card *ngIf="dataSource?.filteredData.length">
+              <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+              </mat-paginator>
+          </mat-card>
+      </div>
+  </div>
+</div>
+
+
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+
+ 
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+
+<div  class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <p style="white-space: pre-wrap">{{alert}}</p>
+        <br>
+        <button  type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+      </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div  class="modal" [style.display]="showGameIds ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+  
+        <div class="modal-body">
+        <div >
+            <div class="row ">
+                <h5 style="margin-left: 15px;"> Player userID : <a >{{userID}}</a>   </h5>
+            </div>
+            <br>
+            <div class="row ">
+                <h5 style="margin-left: 15px;" > Opponent userID : <a >{{OpponentUserIds}}</a></h5><br>
+            </div>
+            <br>
+            <div class="row ">
+                <div class="col">
+                    <h5 >GameIds:</h5>
+                    <p >{{GameIds|json}} </p>  
+                </div>
+            </div>
+        </div>
+          <br>
+          <button  type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+  
+        </div>
+  
+        </div>
+      </div>
+    </div>
+
+
+  <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+  </ngx-spinner>

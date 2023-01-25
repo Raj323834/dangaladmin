@@ -1,0 +1,133 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+  
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+    <div class="card" id="new47">
+        <div class="card-header">
+            <i class="fa fa-font-awesome"></i>Update Balance
+        </div>
+        <div class="card-body">
+            <div class="border bg-light">
+                <div class="row mx-md-n5">
+                    <div class="col px-md-5">
+                        <form [formGroup]="searchParamsUserIDForm">
+                            <div class="form-group">
+                                <div class="p-3">
+                                    <div class="row ">
+                                        <div class="col">
+                                            <label class="form-label">User ID</label><br>
+                                            <div class="row ">
+                                                <div class="col">
+                                                    <input type="text" class="form-control" id="user_id"
+                                                        placeholder="User ID" formControlName="user_id"
+                                                        [(ngModel)]="userID">
+                                                </div>
+                                                <div class="col">
+                                                    <div class="float-right">
+                                                        <button  class="btn btn-success btn-sm btn-block" type="button" 
+                                                            (click)="findUserModal()" style="float: right;">Find UserID</button>
+                                    
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <form [formGroup]="searchParamsForm">
+                            <div class="form-group">
+                                <div class="p-3">
+                                    <div class="row ">
+                                    
+                                        <div class="col">
+                                            <div class="col">
+                                                <label 
+                                                    class="form-label">Amount</label><br>
+                                                <input type="text" class="form-control" 
+                                                    placeholder="Amount" formControlName="amount">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="col">
+                                                <label 
+                                                    class="form-label">("To Add enter 100, to subtract enter -100")</label><br>
+                                               
+                                            </div>
+                                        </div>
+
+                                    </div>
+<br><br>
+
+                                    <div class="row ">
+                                        <div class="col">
+                                            <label  class="form-label">Wallet Type</label>
+                                            <div>
+                                                <select class="form-select form-control form-control-sm"
+                                                    formControlName="wallet_type" >
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="DEPOSIT">DEPOSIT</option>
+                                                    <option value="WITHDRAWAL">WITHDRAWAL</option>
+                                                    <option value="PROMO_BONUS">PROMO BONUS</option>
+                                                    <option value="LOCKED_BONUS">LOCKED BONUS</option>
+                                                    <option value="POKER_DEPOSIT">POKER DEPOSIT</option>
+                                                    <option value="POKER_WITHDRAWAL">POKER WITHDRAWAL</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label 
+                                                class="form-label">Comments</label><br>
+                                            <input type="text" class="form-control" 
+                                                placeholder="Comments" formControlName="description">
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="col p-4" *ngIf="access_permission_write">
+                                        <button type="button" class="btn btn-success float-right"
+                                            (click)="updateBalance()">Update Balance</button>
+                                    </div>
+
+                                </div>
+                                <br>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+  <div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>

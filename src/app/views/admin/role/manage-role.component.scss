@@ -1,0 +1,26 @@
+mat-table {
+  width:100%;
+  border-collapse: separate;
+  border: spacing 50px;
+  border: transparent;
+}
+
+th.mat-header-cell {
+  text-align: center !important;
+  justify-content:center !important;
+}
+
+td.mat-cell{
+  border-right: solid 1px #ffffff; 
+  border-left: solid 1px #ffffff;
+  border-bottom :solid 1px #ffffff;
+  border-top :solid 1px #ffffff;
+  justify-content:center !important; 
+}
+::ng-deep .mat-sort-header-container {
+  display:flex;
+  // justify-content:center;
+ 
+}
+
+

@@ -1,0 +1,409 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-body">
+      <mat-card >
+          <label>Sorry..!!  </label><br>
+          <label>You dont have access to this section.</label>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+<div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-header">
+      <i class="fa fa-picture-o"></i>Withdrawal Details <span class="badge badge-info"></span>
+      <div class="card-header-actions">
+        <div class="col">
+          <div class="float-right">
+            <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+              style="float: right;">Find UserID</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <div class="border bg-light">
+          <div class="row mx-md-n2">
+            <div class="col px-md-2">
+              <div class="p-3">
+                <form [formGroup]="searchParamsForm">
+                  <div class="row">
+                    <div class="col">
+                      <label class="form-label"> Withdrawal ID</label>
+                      <input type="text" class="form-control" formControlName="id" placeholder=" Withdrawal ID #">
+                    </div>
+                    <div class="col">
+                      <label class="form-label">User ID</label>
+                      <input type="text" class="form-control" formControlName="user_id" placeholder="User ID"
+                        [(ngModel)]="userID">
+                    </div>
+                    <div class="col">
+                      <label class="form-label">Status</label>
+
+                      <div>
+                        <select class="form-select form-control form-control-sm" formControlName="status">
+                          <option value="">--SELECT--</option>
+                          <option  *ngFor="let withdrawalStatus of withdrawalStatuses" [value]="withdrawalStatus">{{withdrawalStatus}} </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <label class="form-label">Withdrawal Type</label>
+
+                      <div>
+                        <select class="form-select form-control form-control-sm" formControlName="withdrawalType">
+                          <option value="">--SELECT--</option>
+                          <option value="INSTANT">INSTANT</option>
+                          <option value="MANUAL">MANUAL</option>
+
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <label class="form-label">From Date</label>
+                      <input type="date" class="form-control" formControlName="fromTime" placeholder="">
+                    </div>
+
+                    <div class="col">
+                      <label class="form-label">To Date</label>
+                      <input type="date" class="form-control" formControlName="toTime" placeholder="">
+                    </div>
+                    <div class="col p-4">
+                      <button type="button" class="btn btn-success float-right"
+                        (click)="getWithdrawlDetails()">Submit</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card card-default">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <i class="fa fa-align-justify"></i> Withdrawal Data
+        </div>
+        <div class="col">
+          <div>
+            <button *ngIf="showDownloadButton" class="btn btn-success" type="button" (click)="exportAsXLSX()"
+              style="float: right;">download</button>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card-body">
+
+      <mat-card *ngIf="dataSource?.filteredData.length">
+       
+      </mat-card>
+
+      <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+        <div><span>No Data to Display</span></div>
+      </mat-card>
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" class="table table-borderless ">
+
+          <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px "> ID
+            </th><br>
+            <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px">
+              {{row.internalReferenceNumber}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="user_id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px "> User ID
+            </th><br>
+            <td mat-cell *matCellDef="let row" class="mat-row"
+              style=" cursor: pointer; color: royalblue;padding-left: 5px;padding-right:5px"
+              (click)="getUserDetail('userID',row.userId)"> {{row.userId}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="payment_mode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px"> Payment Mode
+            </th><br>
+            <td mat-cell *matCellDef="let row" style="  padding-left: 5px;padding-right:5px">
+              {{row.paymentMode}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Amount
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" padding-left: 5px;padding-right:5px">
+              {{row.paymentTransactionAmount}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Status </th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px ">
+              {{row.transactionStatusDescription}} </td>
+          </ng-container>
+          <ng-container matColumnDef="withdrawalType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Withdrawal Type </th><br>
+            <td mat-cell *matCellDef="let row" style="text-align: center; padding-left: 5px;padding-right:5px ">
+              {{row.withdrawalType}} </td>
+          </ng-container>
+          <ng-container matColumnDef="nameMismatch">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Name Mismatch </th><br>
+            <td mat-cell *matCellDef="let row" style="text-align: center; padding-left: 5px;padding-right:5px ">
+              {{row.nameMismatch}} </td>
+          </ng-container>
+          <ng-container matColumnDef="isSuspicious">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Is Suspicious </th><br>
+            <td mat-cell *matCellDef="let row" style="text-align: center; padding-left: 5px;padding-right:5px ">
+              {{row.isSuspicious}} </td>
+          </ng-container>
+          <ng-container matColumnDef="reason">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Reason </th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px">
+              {{row.reason}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="updated_at">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px"> Updated At</th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px">
+              {{row.updatedAt| date: 'yyyy-MM-dd hh:mm:ss aa'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="created_at">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px">Created At
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" padding-left: 5px;padding-right:5px">
+              {{row.createdAt| date: 'yyyy-MM-dd \n hh:mm'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fulfilled_time">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Fulfilled At
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" padding-left: 5px;padding-right:5px">
+              {{row.fulfilledTime}} </td>
+          </ng-container>
+          <ng-container matColumnDef="Actions">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Action
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" text-align: center;">
+              <button *ngIf="row.transactionStatusDescription==='Initiated'" type="button" data-bs-toggle="modal"
+                data-bs-target="#exampleModalToggle2" class="btn btn-outline-dark btn-sm btn-block"
+                style=" text-align: center;padding-left: 5px;padding-right:5px" (click)="onBtnClick(row)">Edit</button>
+              <button *ngIf="row.transactionStatusDescription==='Pending'" type="button" data-bs-toggle="modal"
+                data-bs-target="#exampleModalToggle2" class="btn btn-outline-dark btn-sm btn-block"
+                style=" text-align: center;padding-left: 5px;padding-right:5px" (click)="onBtnClick(row)">Edit</button>
+              <button
+                *ngIf="row.transactionStatusDescription!=='Initiated'&& row.transactionStatusDescription!=='Pending'"
+                type="button" data-bs-toggle="modal" data-bs-target="#exampleModalToggle2"
+                class="btn btn-outline-dark btn-sm btn-block"
+                style=" text-align: center;padding-left: 5px;padding-right:5px" (click)="onBtnClick(row)">Show
+                Details</button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        </table>
+      </mat-card>
+
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+        </mat-paginator>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- USerDetails block -->
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)">
+</app-user-detail>
+
+<!-- USerDetails block ends -->
+
+<div *ngIf="this.modalData" class="modal" [style.display]="showModal ? 'block' : 'none'" style="overflow-y: scroll;">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 *ngIf="this.modalData">Withdrawl Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+      </div>
+
+
+
+
+      <div *ngIf="this.modalData" class="modal-body">
+        <div class="row">
+          <div class="col">
+            <label class="form-label">ID</label>
+            <input type="text" class="form-control" value={{this.modalData.internalReferenceNumber}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">USER ID</label>
+            <input type="text" class="form-control" value={{this.modalData.userId}} readonly>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">USERNAME</label>
+            <input type="text" class="form-control" value={{this.modalData.userName}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">PAYMENT MODE</label>
+            <input type="text" class="form-control" value={{this.modalData.paymentMode}} readonly>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">AMOUNT</label>
+            <input type="text" class="form-control" value={{this.modalData.paymentTransactionAmount}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">VPA</label>
+            <input type="text" class="form-control" value={{this.modalData.vpa}} readonly>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">WITHDRAWAL TYPE</label>
+            <input type="text" class="form-control" value={{this.modalData.withdrawalType}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">IFSC CODE</label>
+            <input type="text" class="form-control" value={{this.modalData.ifscCode}} readonly>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">ACCOUNT HOLDER NAME</label>
+            <input type="text" class="form-control" value={{this.modalData.accountHolderName}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">ACCOUNT NUMBER</label>
+            <input type="text" class="form-control" value={{this.modalData.accountNumber}} readonly>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">TDS AMOUNT</label>
+            <input type="text" class="form-control" value={{this.modalData.tdsAmount}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">TO BE PAID AMOUNT</label>
+            <input type="text" class="form-control" value={{this.modalData.toBePaidAmount}} readonly>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">NAME MISMATCH</label>
+            <input type="text" class="form-control" value={{this.modalData.nameMismatch}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">IS SUSPICIOUS</label>
+            <input type="text" class="form-control" value={{this.modalData.isSuspicious}} readonly>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">FULFILLED TIME</label>
+            <input type="text" class="form-control" value={{this.modalData.fulfilledTime}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">CREATED AT</label>
+            <input type="text" class="form-control" value={{this.modalData.createdAt}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">UPDATED AT</label>
+            <input type="text" class="form-control" value={{this.modalData.updatedAt}} readonly>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label class="form-label">REASON</label>
+            <input type="text" class="form-control" [(ngModel)]="reason" value={{this.modalData.reason}}
+              [readonly]="selectedWithdrawlStatus!=='Initiated'&&  selectedWithdrawlStatus !=='Pending'">
+          </div>
+          <div class="col">
+            <label class="form-label">STATUS</label>
+            <input
+              *ngIf="selectedWithdrawlStatus !=='Initiated' && selectedWithdrawlStatus!=='Reversed' && selectedWithdrawlStatus!=='Pending'"
+              type="text" class="form-control" [value]="this.modalData.transactionStatusDescription" readonly>
+
+            <div *ngIf="selectedWithdrawlStatus ==='Initiated' ||  selectedWithdrawlStatus ==='Reversed'"
+              class="input-group mb-6">
+              <select class="form-select" [(ngModel)]="transactionStatusDescription"
+                [value]="this.modalData.transactionStatusDescription">
+                <option value="APPROVED">APPROVED</option>
+                <option value="DECLINED">DECLINED</option>
+              </select>
+              <label class="input-group-text" for="inputGroupSelect02">Options</label>
+            </div>
+            <div *ngIf="selectedWithdrawlStatus ==='Pending' " class="input-group mb-6">
+              <select class="form-select" [(ngModel)]="transactionStatusDescription"
+                [value]="this.modalData.transactionStatusDescription">
+
+                <option value="DECLINED">DECLINED</option>
+              </select>
+              <label class="input-group-text" for="inputGroupSelect02">Options</label>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div *ngIf="access_permission_write">
+          <button
+          *ngIf="selectedWithdrawlStatus ==='Initiated' ||  selectedWithdrawlStatus ==='Reversed'||  selectedWithdrawlStatus ==='Pending'"
+          class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+          (click)="processWithdrawl(this.modalData.userId,this.modalData.internalReferenceNumber,this.modalData.reason)">Save</button>
+        </div>
+       
+        <button
+          *ngIf="selectedWithdrawlStatus !=='Initiated' && selectedWithdrawlStatus!=='Reversed' && selectedWithdrawlStatus!=='Pending'"
+          class="btn btn-danger" type="button" data-dismiss="modal" (click)="closeModal()">Close</button>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p style="white-space: pre-wrap">{{alert}}</p>
+        <br>
+        <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+  <p style="color: white">Please Wait. </p>
+</ngx-spinner>

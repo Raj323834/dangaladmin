@@ -1,0 +1,347 @@
+<div >
+  <nav class="sidebar-nav">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/dashboard']">
+          <i class="nav-icon icon-drop"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-title" *ngIf="access_permission_read_MANAGE_ADMIN_USERS || access_permission_read_MANAGE_ROLES || access_permission_write_MANAGE_ADMIN_USERS || access_permission_write_MANAGE_ROLES" style="background-color: rgb(83, 76, 76);">Admin Users</li>
+    
+      <li class="nav-item" *ngIf="access_permission_read_MANAGE_ADMIN_USERS || access_permission_write_MANAGE_ADMIN_USERS">
+        <a class="nav-link" [routerLink]="['/admin/manage-admin']">
+          <i class="nav-icon icon-drop"></i> Manage Admin Users
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_MANAGE_ROLES || access_permission_write_MANAGE_ROLES">
+        <a class="nav-link" [routerLink]="['/admin/manage-role']">
+          <i class="nav-icon icon-pencil"></i> Manage Roles
+        </a>
+      </li>
+
+      <li class="nav-title" style="background-color: rgb(83, 76, 76);"
+      *ngIf="access_permission_write_GET_PLAYER_DETAILS || access_permission_write_MANUAL_REGISTRATION || access_permission_write_DELETE_PLAYER
+      || access_permission_write_LOCK_USER || access_permission_write_LOCK_USER || access_permission_write_FRAUD_USER || access_permission_read_GET_PLAYER_DETAILS || access_permission_read_MANUAL_REGISTRATION || access_permission_read_DELETE_PLAYER
+      || access_permission_read_LOCK_USER || access_permission_read_LOCK_USER || access_permission_read_FRAUD_USER">Players</li>
+
+      <li class="nav-item"  *ngIf="access_permission_write_GET_PLAYER_DETAILS || access_permission_write_MANUAL_REGISTRATION || access_permission_write_DELETE_PLAYER
+      || access_permission_write_LOCK_USER || access_permission_write_LOCK_USER || access_permission_write_FRAUD_USER || access_permission_read_GET_PLAYER_DETAILS || access_permission_read_MANUAL_REGISTRATION || access_permission_read_DELETE_PLAYER
+      || access_permission_read_LOCK_USER || access_permission_read_LOCK_USER || access_permission_read_FRAUD_USER" >
+
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-bell" ></i>   Players</li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" style="padding: 0%; margin: 0%; " *ngIf="access_permission_read_GET_PLAYER_DETAILS || access_permission_write_GET_PLAYER_DETAILS">
+        <a class="nav-link" [routerLink]="['/player/player-detail']">
+          <i class="nav-icon icon-bell"></i> Get Player Details</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_MANUAL_REGISTRATION || access_permission_write_MANUAL_REGISTRATION">
+        <a class="nav-link" [routerLink]="['/player/manual-registration']" style="padding: 0%; margin: 0%;">
+          <i class="nav-icon icon-bell"></i>Manual Registration</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_DELETE_PLAYER || access_permission_write_DELETE_PLAYER">
+        <a class="nav-link" [routerLink]="['/player/deletePlayer']">
+          <i class="nav-icon icon-bell"></i> Delete Player</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_LOCK_USER || access_permission_write_LOCK_USER">
+        <a class="nav-link" [routerLink]="['/player/lockuser']">
+          <i class="nav-icon icon-bell"></i> Lock Player</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_FRAUD_USER || access_permission_write_FRAUD_USER">
+        <a class="nav-link" [routerLink]="['/player/fraudPlayer']">
+          <i class="nav-icon icon-bell"></i> Fraud Player</a>
+      </li>
+      </mat-expansion-panel>
+      </li>
+
+      <li class="nav-title" style="background-color: rgb(83, 76, 76);"  *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT ">Banners</li>
+
+      <li class="nav-item" *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT ">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-pencil"></i> Banner Management
+      </li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" style="padding: 0%; margin: 0%; " *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT">
+        <a class="nav-link" [routerLink]="['/banner/homebannerdangalgame']">
+          <i class="nav-icon icon-pencil"></i> DG Home Page</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT">
+        <a class="nav-link" [routerLink]="['/banner/homebannerplaystore']">
+          <i class="nav-icon icon-pencil"></i> PS Home Page</a>
+      </li>
+      <div *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT">
+        <li class="nav-item" *ngIf="permission">
+          <a class="nav-link" [routerLink]="['/banner/coinbannerhome']">
+            <i class="nav-icon icon-pencil"></i> Co.in Home Page</a>
+        </li>
+      </div>
+      <li class="nav-item" *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT">
+        <a class="nav-link" [routerLink]="['/banner/dealbannerdangalgames']">
+          <i class="nav-icon icon-pencil"></i> DG Deals</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT">
+        <a class="nav-link" [routerLink]="['/banner/dealbannerplaystore']">
+          <i class="nav-icon icon-pencil"></i> PS Deals</a>
+      </li>
+      <div *ngIf="access_permission_read_BANNER_MANAGEMENT || access_permission_write_BANNER_MANAGEMENT">
+        <li class="nav-item" *ngIf="permission">
+          <a class="nav-link" [routerLink]="['/banner/coinbannerdeals']">
+            <i class="nav-icon icon-pencil"></i> Co.in Deals Page</a>
+        </li>
+      </div>
+
+      </mat-expansion-panel>
+      </li>
+
+      <li class="nav-title" style="background-color: rgb(83, 76, 76);"> Modules</li>
+
+      <li class="nav-item" *ngIf="access_permission_read_WITHDRAWAL||access_permission_read_WITHDRAWAL_JOURNEY||access_permission_read_BYPASS_USER_REPORTS 
+      || access_permission_write_WITHDRAWAL||access_permission_write_WITHDRAWAL_JOURNEY||access_permission_write_BYPASS_USER_REPORTS">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-cursor"></i> Withdrawal</li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" *ngIf="access_permission_read_WITHDRAWAL || access_permission_write_WITHDRAWAL">
+        <a class="nav-link" [routerLink]="['/withdrawal/withdrawal-detail']">
+          <i class="nav-icon icon-cursor"></i> Withdrawal Details</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_WITHDRAWAL_JOURNEY || access_permission_write_WITHDRAWAL_JOURNEY">
+        <a class="nav-link" [routerLink]="['/withdrawal/withdrawal-journey']">
+          <i class="nav-icon icon-cursor"></i> Withdrawal Journey</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_BYPASS_USER_REPORTS || access_permission_write_BYPASS_USER_REPORTS">
+        <a class="nav-link" [routerLink]="['/withdrawal/bypassuserreports']">
+          <i class="nav-icon icon-cursor"></i> ByPass User</a>
+      </li>
+      </mat-expansion-panel>
+      </li>
+
+      <li class="nav-item" *ngIf="access_permission_read_KYC || access_permission_read_KYC_JORNEY || access_permission_read_MANUAL_KYC
+      || access_permission_write_KYC || access_permission_write_KYC_JORNEY || access_permission_write_MANUAL_KYC">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-star"></i> KYC</li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" *ngIf="access_permission_read_KYC || access_permission_write_KYC">
+        <a class="nav-link" [routerLink]="['/kyc/kyc-detail']">
+          <i class="nav-icon icon-star"></i> KYC Details</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_KYC_JORNEY || access_permission_write_KYC_JORNEY">
+        <a class="nav-link" [routerLink]="['/kyc/kyc-journey']">
+          <i class="nav-icon icon-star"></i> KYC Journey</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_MANUAL_KYC || access_permission_write_MANUAL_KYC">
+        <a class="nav-link" [routerLink]="['/kyc/manual-kyc']">
+          <i class="nav-icon icon-star"></i> Manual KYC</a>
+      </li>
+      </mat-expansion-panel>
+      </li>
+
+      <li class="nav-item" *ngIf="access_permission_read_LEADERBOARD || access_permission_read_LEADERBOARD_WINNING_REPORT ||
+      access_permission_write_LEADERBOARD ">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-calculator"></i> Leaderboard
+      </li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" *ngIf="access_permission_read_LEADERBOARD ||  access_permission_write_LEADERBOARD">
+        <a class="nav-link" [routerLink]="['/leaderboard/leaderboards']">
+          <i class="nav-icon icon-calculator"></i> Leaderboards</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_LEADERBOARD_WINNING_REPORT ">
+        <a class="nav-link" [routerLink]="['/leaderboard/leaderboardWinning']">
+          <i class="nav-icon icon-calculator"></i> Leaderboard Winning</a>
+      </li>
+      </mat-expansion-panel>
+      </li>
+      <!--Make entry here every Button created in misc. Job-->
+      <li class="nav-item" *ngIf="access_permission_read_MISC_JOB || access_permission_write_MISC_JOB
+       || access_permission_read_WALLET_BACKUP || access_permission_write_WALLET_BACKUP ">
+        <a class="nav-link" [routerLink]="['/miscjob/miscjob']">
+          <i class="nav-icon icon-star"></i> Misc Job
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_INCENTIVE_MODULE || access_permission_write_INCENTIVE_MODULE">
+        <a class="nav-link" [routerLink]="['/configuration/configuration']">
+          <i class="nav-icon icon-star"></i> Configuration
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_BONUS || access_permission_write_BONUS">
+        <a class="nav-link" [routerLink]="['/bonus']">
+          <i class="nav-icon icon-pie-chart"></i> Bonus
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_UPDATE_BALANCE || access_permission_write_UPDATE_BALANCE">
+        <a class="nav-link" [routerLink]="['/updateBalance']">
+          <i class="nav-icon icon-pie-chart"></i> Update Balance
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_RUMMY || access_permission_write_RUMMY">
+        <a class="nav-link" [routerLink]="['/rummy']">
+          <i class="nav-icon icon-pie-chart"></i> Rummy
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_GAME_ORDER || access_permission_write_GAME_ORDER">
+        <a class="nav-link" [routerLink]="['/gameorder']">
+          <i class="nav-icon icon-calculator"></i> Game Order
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_GEORESTRICTION || access_permission_write_GEORESTRICTION">
+        <a class="nav-link" [routerLink]="['/geoRestriction']">
+          <i class="nav-icon icon-calculator"></i> Geo Restriction
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_WHITELIST || access_permission_write_WHITELIST">
+        <a class="nav-link" [routerLink]="['/whitelist']">
+          <i class="nav-icon icon-calculator"></i> Whitelist
+        </a>
+      </li>
+
+      <li class="nav-title" style="background-color: rgb(83, 76, 76);">Reports</li>
+
+      <li class="nav-item">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-puzzle"></i> Reports </li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" *ngIf="access_permission_read_USER_REGISTRATIONS">
+        <a class="nav-link" [routerLink]="['/report/userRegistrations']">
+          <i class="nav-icon icon-puzzle"></i> User Registrations</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_TRANSACTION_HISTORY_REPORT">
+        <a class="nav-link" [routerLink]="['/report/transactionHistory']">
+          <i class="nav-icon icon-puzzle"></i> Transaction History</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_OVERVIEW_REPORT">
+        <a class="nav-link" [routerLink]="['/report/overviewReport']">
+          <i class="nav-icon icon-puzzle"></i> Overview</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_SNAPSHOT_REPORT">
+        <a class="nav-link" [routerLink]="['/report/snapshotReports']">
+          <i class="nav-icon icon-puzzle"></i> Snapshot Reports</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_WITHDRAWAL_REPORT">
+        <a class="nav-link" [routerLink]="['/report/withdrawalReport']">
+          <i class="nav-icon icon-puzzle"></i> Withdrawal</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_DEPOSIT_REPORT">
+        <a class="nav-link" [routerLink]="['/report/depositReport']">
+          <i class="nav-icon icon-puzzle"></i> Deposit</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_ADMIN_ACTIVITY_REPORT">
+        <a class="nav-link" [routerLink]="['/report/adminActivityReport']">
+          <i class="nav-icon icon-puzzle"></i> Admin Activity</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_CASH_GAME_REPORT">
+        <a class="nav-link" [routerLink]="['/report/cashGameReports']">
+          <i class="nav-icon icon-puzzle"></i> Cash Game</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_FREE_GAME_REPORT">
+        <a class="nav-link" [routerLink]="['/report/freeGameReports']">
+          <i class="nav-icon icon-puzzle"></i> Free Game</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_DAILY_STATS_REPORT">
+        <a class="nav-link" [routerLink]="['/report/dailyStatsReports']">
+          <i class="nav-icon icon-puzzle"></i> Daily Stats</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_SUSPICIOUS_REPORT">
+        <a class="nav-link" [routerLink]="['/report/suspiciousReports']">
+          <i class="nav-icon icon-puzzle"></i> Suspicious</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_FRAUD_REPORT">
+        <a class="nav-link" [routerLink]="['/report/fraudReport']">
+          <i class="nav-icon icon-puzzle"></i> Fraud</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_RAF_REPORT">
+        <a class="nav-link" [routerLink]="['/report/rafReports']">
+          <i class="nav-icon icon-puzzle"></i> RAF</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_TDS_REPORT">
+        <a class="nav-link" [routerLink]="['/report/tdsReport']">
+          <i class="nav-icon icon-puzzle"></i> TDS</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_TOURNAMENT_REPORT">
+        <a class="nav-link" [routerLink]="['/report/tournamentReports']">
+          <i class="nav-icon icon-puzzle"></i> Poker Tournament</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_RUMMY_TOURNAMENT_REPORT">
+        <a class="nav-link" [routerLink]="['/report/rummyTournamentReports']">
+          <i class="nav-icon icon-puzzle"></i>Rummy Tournament</a>
+      </li>
+     
+      </mat-expansion-panel>
+      </li>
+
+      <li class="nav-item" *ngIf="access_permission_read_CALL_BREAK_GAME_STATS">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-credit-card"></i> Call Break
+      </li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" *ngIf="access_permission_read_CALL_BREAK_GAME_STATS">
+        <a class="nav-link" [routerLink]="['/report/callbreakgamestats']">
+          <i class="nav-icon icon-credit-card"></i>Callbreak Game Stats</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_CALL_BREAK_GAME_STATS">
+        <a class="nav-link" [routerLink]="['/report/CallbreakGameLogs']">
+          <i class="nav-icon icon-credit-card"></i>Callbreak Game Logs</a>
+      </li>
+      </mat-expansion-panel>
+      </li>
+
+
+      <li class="nav-item" *ngIf="access_permission_read_POKER_TO_DG_TRANSFER_REPORT || access_permission_read_DG_TO_POKER_TRANSFER_REPORT">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-book-open"></i> DG-POKER Reports
+      </li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" *ngIf="access_permission_read_POKER_TO_DG_TRANSFER_REPORT">
+        <a class="nav-link" [routerLink]="['/report/pokerToDgTransferReport']">
+          <i class="nav-icon icon-book-open"></i> Poker--> DG</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_DG_TO_POKER_TRANSFER_REPORT">
+        <a class="nav-link" [routerLink]="['/report/dgToPokerTransferReport']">
+          <i class="nav-icon icon-book-open"></i> DG --> Poker</a>
+      </li>
+      </mat-expansion-panel>
+      </li>
+
+      <li class="nav-item" *ngIf="access_permission_read_IP_REPORT || access_permission_read_WINNING_REPORT || access_permission_read_HANDS_PLAYED_TOGETHER_REPORT">
+        <mat-expansion-panel style="padding: 0%; margin: 0%;">
+          <mat-expansion-panel-header style="padding: 0%; margin: 0% ;height: 45px;">
+      <li class="nav-title " style="padding: 0%; margin: 10%; "><i class="nav-icon icon-puzzle"></i> Collusion Reports
+      </li>
+      </mat-expansion-panel-header>
+      <li class="nav-item" *ngIf="access_permission_read_IP_REPORT">
+        <a class="nav-link" [routerLink]="['/report/ipReport']">
+          <i class="nav-icon icon-puzzle"></i> IP</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_WINNING_REPORT">
+        <a class="nav-link" [routerLink]="['/report/winningReport']">
+          <i class="nav-icon icon-puzzle"></i> Winning</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_HANDS_PLAYED_TOGETHER_REPORT">
+        <a class="nav-link" [routerLink]="['/report/handsPlayedTogetherReport']">
+          <i class="nav-icon icon-puzzle"></i> Hands Played</a>
+      </li>
+      <li class="nav-item" *ngIf="access_permission_read_OpponentPlayedTogetherReport">
+        <a class="nav-link" [routerLink]="['/report/opponentPlayedTogetherReport']">
+          <i class="nav-icon icon-puzzle"></i>Opponent Played Together Report</a>
+      </li>
+      </mat-expansion-panel>
+      </li>
+
+      <li class="nav-title" style="background-color: rgb(83, 76, 76);">Profile</li>
+
+      <li class="nav-title ">
+        <a class="nav-link" [routerLink]="['/changePassword']">
+          <i class="nav-icon icon-calculator"></i> Change Password
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,138 @@
+<div *ngIf="!access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-body">
+            <mat-card>
+                <label>Sorry..!! </label><br>
+                <label>You dont have access to this section.</label>
+            </mat-card>
+
+        </div>
+    </div>
+</div>
+<div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Report <span class="badge badge-info">NEW</span>
+            <div class="card-header-actions">
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+
+                                        <div class="col">
+                                            <label  class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                 placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label  class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getFraudReportDetails()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> Fraud Report
+                </div>
+                <div class="col">
+                  
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-form-field>
+                    <mat-label>Filter</mat-label>
+                    <input matInput placeholder="" (keyup)="applyFilter($event)">
+                </mat-form-field>
+            </mat-card>
+            <br><br>
+            <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                    class="table table-borderless ">
+                    <ng-container matColumnDef="userId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> User ID
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" class="mat-row" style=" cursor: pointer; color: royalblue;"
+                            (click)="getUserDetail('userID',row.userId)"> {{row.userId}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fraudReason">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Reason</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.fraudReason}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="markedFraudDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Marked Fraud date</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">
+                            {{row.markedFraudDate}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+            </mat-card>
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<!-- USerDetails block -->
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+<!-- USerDetails block ends -->
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+</ngx-spinner>

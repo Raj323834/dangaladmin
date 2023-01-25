@@ -1,0 +1,457 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-body">
+      <mat-card >
+          <label>Sorry..!!  </label><br>
+          <label>You dont have access to this section.</label>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+<div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-header">
+      <i class="fa fa-picture-o"></i>Tables Config <span class="badge badge-info"></span>
+      <div class="card-header-actions">
+        <div class="col">
+          <div class="float-right" *ngIf="access_permission_write">
+            <button class="btn btn-success btn-sm btn-block" type="button" (click)="showCreateTableConfig()"
+              style="float: right;">Create Table Config</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card card-default">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <i class="fa fa-align-justify"></i> Table Config
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card-body">
+
+      <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+        <div><span>No Data to Display</span></div>
+      </mat-card>
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" class="table table-borderless ">
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px "> ID
+            </th><br>
+            <td mat-cell *matCellDef="let row" class="mat-row"
+              style=" cursor: pointer; color: royalblue;padding-left: 5px;padding-right:5px"
+              (click)="viewTableConfigDetails(row)"> {{row.id}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px "> Name
+            </th><br>
+            <td mat-cell *matCellDef="let row" class="mat-row"> {{row.name}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="gameVariant">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px"> Game Variant
+            </th><br>
+            <td mat-cell *matCellDef="let row" style="  padding-left: 5px;padding-right:5px">
+              {{row.gameVariant}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cardsPerPlayer">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Cards PerPlayer
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" padding-left: 5px;padding-right:5px">
+              {{row.cardsPerPlayer}} </td>
+          </ng-container>
+
+
+
+
+          <ng-container matColumnDef="cashGame">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Cash Game </th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px ">
+              {{row.cashGame}} </td>
+          </ng-container>
+          <ng-container matColumnDef="botsAllowed">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Bots Allowed </th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px ">
+              {{row.botsAllowed}} </td>
+          </ng-container>
+          <ng-container matColumnDef="minimumPlayers">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Min Players</th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px ">
+              {{row.minimumPlayers}} </td>
+          </ng-container>
+          <ng-container matColumnDef="entryFee">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Entry Fee </th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px ">
+              {{row.entryFee}} </td>
+          </ng-container>
+          <ng-container matColumnDef="decks">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Decks </th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px ">
+              {{row.decks}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="seats">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Seats</th><br>
+            <td mat-cell *matCellDef="let row" style="text-align: center; padding-left: 5px;padding-right:5px ">
+              {{row.seats}} </td>
+          </ng-container>
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px">Created At
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" padding-left: 5px;padding-right:5px">
+              {{row.createdAt| date: 'yyyy-MM-dd \n hh:mm'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px">Updated At
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" padding-left: 5px;padding-right:5px">
+              {{row.updatedAt| date: 'yyyy-MM-dd \n hh:mm'}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="Actions">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Action
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" text-align: center;">
+              <div *ngIf="access_permission_write">
+                <button type="button" data-bs-toggle="modal" class="btn btn-outline-dark btn-sm btn-block"
+                style=" text-align: center;padding-left: 5px;padding-right:5px"
+                (click)="showConfirmationBox(row.id)">Delete</button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        </table>
+      </mat-card>
+
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+        </mat-paginator>
+      </mat-card>
+    </div>
+  </div>
+
+
+  <div class="modal" [style.display]="showCreateModal ? 'block' : 'none'" style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Create Table Config</h5>
+          <button type="button" class="close" data-dismiss="modal" (click)="closeCreateTableConfig()">&times;</button>
+        </div>
+
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Name(*)</label>
+              <input type="text" minlength="3" maxlength="50" class="form-control" [(ngModel)]="name">
+            </div>
+            <div class="col">
+            <label  class="form-label">Game Variant(*)</label>
+              <div>
+                <select class="form-select form-control" [(ngModel)]="gameVariant">
+                  <option value="POINTS">POINTS</option>
+                  <option value="POOL">POOL</option>
+                  <option value="DEALS">DEALS</option>
+
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col">
+            <label  class="form-label">Cards PerPlayer</label>
+              <input type="number" class="form-control" [(ngModel)]="cardsPerPlayer" readonly>
+            </div>
+            <div class="col">
+            <label  class="form-label">Cash Game</label>
+
+              <select class="form-select form-control" [(ngModel)]="cashGame">
+                <option value="true">TRUE</option>
+                <option value="false">FALSE</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+            <label  class="form-label">Point Value</label>
+              <div>
+                <input type="number" class="form-control" [(ngModel)]="pointValue">
+              </div>
+            </div>
+            <div class="col">
+            <label  class="form-label">Deals Type</label>
+              <div>
+                <select class="form-select form-control" [(ngModel)]="dealsType">
+                <option value="">--SELECT--</option>
+                  <option value=2>2</option>
+                  <option value=3>3</option>
+                </select>
+              </div>
+            </div>
+            <div class="col">
+            <label  class="form-label">Pool Variant</label>
+              <select class="form-select form-control" [(ngModel)]="poolVariant">
+              <option value="">--SELECT--</option>
+                <option value=101>101</option>
+                <option value=201>201</option>
+              </select>
+            </div>
+
+          </div>
+          <br>
+          <div class="row">
+            <div class="col">
+            <label  class="form-label">Decks</label>
+              <select class="form-select form-control" [(ngModel)]="decks">
+              <option value="">--SELECT--</option>
+                <option value=1>1</option>
+                <option value=2>2</option>
+              </select>
+            </div>
+            <div class="col">
+            <label  class="form-label">Seats</label>
+              <select class="form-select form-control" [(ngModel)]="seats">
+              <option value="">--SELECT--</option>
+                <option value=2>2</option>
+                <option value=3>3</option>
+                <option value=4>4</option>
+                <option value=5>5</option>
+                <option value=6>6</option>
+              </select>
+            </div>
+
+            <div class="col">
+            <label  class="form-label">Entry Fee</label>
+              <input type="number" class="form-control" [(ngModel)]="entryFee">
+            </div>
+            <div class="col">
+            <label  class="form-label">Minimum Players</label>
+              <input type="number" class="form-control" [(ngModel)]="minimumPlayers">
+            </div>
+            <div class="col">
+            <label  class="form-label">Rake Percent</label>
+            <input type="number" class="form-control"  [(ngModel)]="rakePercent" placeholder="0.0">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col">
+            <label  class="form-label">First DropScore</label>
+            <input type="number" class="form-control"  [(ngModel)]="firstDropScore" placeholder="0.0" >
+            </div>
+            <div class="col">
+            <label  class="form-label">Middle DropScore</label>
+            <input type="number" class="form-control"  [(ngModel)]="middleDropScore" placeholder="0.0" >
+            </div>
+            <div class="col">
+            <label  class="form-label">Max DropScore</label>
+            <input type="number" class="form-control"  [(ngModel)]="maxDropScore" placeholder="0.0" >
+            </div>
+            <div class="col">
+            <label  class="form-label">Max TableCount</label>
+              <input type="number" class="form-control" [(ngModel)]="maxTableCount">
+            </div>
+            <div class="col">
+            <label  class="form-label">Bots Allowed</label>
+              <select class="form-select form-control" [(ngModel)]="botsAllowed">
+                <option value="true">TRUE</option>
+                <option value="false">FALSE</option>
+              </select>
+            </div>
+
+          </div>
+          <br>
+          <button class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+            (click)="createTableConfig()">Create</button>
+          <button class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+            (click)="closeCreateTableConfig()">Close</button>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" [style.display]="showModal ? 'block' : 'none'" style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="this.modalData">Table Configuration</h5>
+          <button type="button" class="close" data-dismiss="modal" (click)="closeTableConfigDetails()">&times;</button>
+        </div>
+        <div *ngIf="this.modalData" class="modal-body">
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Id</label>
+              <input type="text" class="form-control" value={{this.modalData.id}} readonly>
+            </div>
+            <div class="col">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" value={{this.modalData.name}} readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Game Variant</label>
+              <input type="text" class="form-control" value={{this.modalData.gameVariant}} readonly>
+            </div>
+            <div class="col">
+              <label class="form-label">Point Value</label>
+              <input type="text" class="form-control" value={{this.modalData.pointValue}} readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Deals Type</label>
+              <input type="text" class="form-control" value={{this.modalData.dealsType}} readonly>
+            </div>
+            <div class="col">
+              <label class="form-label">Pool Variant</label>
+              <input type="text" class="form-control" value={{this.modalData.poolVariant}} readonly>
+            </div>
+          </div>
+          <br>
+
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Cards PerPlayer</label>
+              <input type="text" class="form-control" value={{this.modalData.cardsPerPlayer}} readonly>
+            </div>
+            <div class="col">
+            <label  class="form-label">Decks</label>
+            <input type="text" class="form-control"  value={{this.modalData.decks}} readonly>
+          </div>
+          <div class="col">
+            <label  class="form-label">Seats</label>
+            <input type="text" class="form-control"  value={{this.modalData.seats}} readonly>
+          </div>
+          <div class="col">
+            <label  class="form-label">Entry Fee</label>
+            <input type="text" class="form-control"  value={{this.modalData.entryFee}} readonly>
+          </div>
+          <div class="col">
+            <label  class="form-label">Min Players</label>
+            <input type="text" class="form-control" value={{this.modalData.minimumPlayers}} readonly>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label  class="form-label">Rake Percent</label>
+            <input type="text" class="form-control"  value={{this.modalData.rakePercent}} readonly>
+          </div>
+          <div class="col">
+            <label  class="form-label">First DropScore</label>
+            <input type="text" class="form-control"  value={{this.modalData.firstDropScore}} readonly>
+          </div>
+          <div class="col">
+            <label  class="form-label">Middle DropScore</label>
+            <input type="text" class="form-control"   value={{this.modalData.middleDropScore}} readonly>
+          </div>
+          <div class="col">
+            <label  class="form-label">Max DropScore</label>
+            <input type="text" class="form-control" value={{this.modalData.maxDropScore}} readonly>
+          </div>
+          <div class="col">
+            <label  class="form-label">Max TableCount</label>
+            <input type="text" class="form-control"  value={{this.modalData.maxTableCount}} readonly>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <label  class="form-label">Cash Game</label>
+            <input type="text" class="form-control" value={{this.modalData.cashGame}} readonly>
+
+          </div>
+          <div class="col">
+            <label  class="form-label">Bots Allowed</label>
+            <input type="text" class="form-control"   value={{this.modalData.botsAllowed}} readonly>
+          </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col">
+              <label class="form-label">Created At</label>
+              <input type="text" class="form-control" value={{this.modalData.createdAt}} readonly>
+            </div>
+            <div class="col">
+              <label class="form-label">Updated At</label>
+              <input type="text" class="form-control" value={{this.modalData.updatedAt}} readonly>
+            </div>
+
+          </div>
+          <br>
+
+
+
+          <br>
+          <button class="btn btn-danger" type="button" data-dismiss="modal"
+            (click)="showConfirmationBox(this.modalData.id)">Delete</button>
+          <button class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+            (click)="closeTableConfigDetails()">Close</button>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p style="white-space: pre-wrap">{{alert}}</p>
+          <br>
+          <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" [style.display]="showConfirmBox ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>Are you sure you want to delete this Table Configuration?</p>
+          <p>
+            {{deleteTableConfigID}}
+          </p>
+          <button type="button" class="btn btn-success" (click)="deleteTableConfig(deleteTableConfigID)">Yes</button>
+          <button type="button" class="btn btn-danger" (click)="closeConfirmationBox()">No</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+  </ngx-spinner>

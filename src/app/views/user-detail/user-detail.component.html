@@ -1,0 +1,248 @@
+<div  class="modal"  style="overflow-y: scroll; display: block;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h5>User detail</h5>
+                <button type="button" class="close" data-dismiss="modal" (click)="sendCloseToBaseComponent()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">UserID</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.userId}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">UserName</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.userName}} readonly>
+                    </div>
+                </div>
+
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">First Name</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.firstName}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Middlename</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.middleName}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Lastname</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.lastName}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.userModal.dob}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Gender</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.gender}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Email</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.email}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Mobile</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.mobile}} readonly>
+                    </div>
+                   
+                   
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">KycVerified</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.kycVerified}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Mobile Verified</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.mobileVerified}} readonly>
+                    </div>
+                    <div class="col"> <label class="form-label">Email Verified</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.emailVerified}} readonly>
+                    </div>
+
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Registration Date</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.registrationDate}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">SignUp/Referral Code </label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.code}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Is Locked</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.isLocked}} readonly>
+                    </div>
+                </div>
+                <br>
+
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Is Fraud</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.userModal.isFraud}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Fraud Reason</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.userModal.fraudReason}} readonly>
+                    </div>
+                    <div class="col">
+                      <label class="form-label">Fraud marked date</label>
+                      <input type="text" class="form-control" placeholder=""
+                          value={{this.userModal.markedFraudDate}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Non Fraud marked date</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.userModal.markedNonFraudDate}} readonly>
+                      </div>
+
+                  </div>
+                  <br>
+
+                <!-- ADDRESS  -->
+                <br> <br>
+                <h4>Address Detail</h4>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Address</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.address}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Address2</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.address2}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">City</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.city}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">State</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.state}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Pin</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.pin}} readonly>
+                    </div>
+                </div>
+
+                <br><br>
+                <h4>Balances</h4>
+                <div class="row">
+
+                    <div class="col">
+                        <label  class="form-label">Deposit</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.deposit}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Withdrawable</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.userModal.withdrawable}} readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Poker Deposit</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.pokerDeposit}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Poker Withdrawable</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.userModal.pokerWithdrawal}} readonly>
+                    </div>
+
+                </div>
+                <br><br>
+                <h4>Amounts</h4>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Total Deposit </label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.totalDepositAmount}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Total Withdrawal</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.totalWithdrawalAmount}} readonly>
+                    </div>
+
+                </div>
+
+                <br><br>
+                <h4>Game Details</h4>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Game Chips </label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.promoBonus}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label"> Bonus</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.lockedBonus}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Total Cash Games Played</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.totalCashGamesPlayed}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Total Free Games Played</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.totalFreeGamesPlayed}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Total Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.userModal.totalRake}} readonly>
+                    </div>
+                </div>
+
+
+                <br> <br>
+                <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="sendCloseToBaseComponent()">Close</button>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>

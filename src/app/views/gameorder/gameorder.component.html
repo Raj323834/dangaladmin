@@ -1,0 +1,234 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+  
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Game Order  <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+                <div class="col p-4">   
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+         
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="formGroupNewGames">
+                                    <div class="row">
+                                        <label style="font-weight: bold;">    New Games</label>
+                                        </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="exampleFormControlInput1" class="form-label">Game 1</label>
+                                            <select name="new_game_one" formControlName="new_game_one" class="form-control">
+                                                <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput2" class="form-label"> Game 2</label>
+                                            <select name="new_game_two" formControlName="new_game_two" class="form-control" >
+                                                <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput3" class="form-label"> Game 3</label>
+                                            <div>
+                                                <select name="new_game_three" formControlName="new_game_three" class="form-control" >
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput4" class="form-label"> Game 4</label>
+                                            <select name="new_game_four" formControlName="new_game_four" class="form-control" >
+                                                <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput5" class="form-label"> Game 5</label>
+                                            <div>
+                                                <select name="new_game_five" formControlName="new_game_five" class="form-control" >
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput5" class="form-label"> Game 6</label>
+                                            <div>
+                                                <select name="new_game_six" formControlName="new_game_six" class="form-control" >
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput5" class="form-label"> Game 7</label>
+                                            <div>
+                                                <select name="new_game_seven" formControlName="new_game_seven" class="form-control" >
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="formGroupCardGames">
+                                    <div class="row">
+                                        <label style="font-weight: bold;">    Card Games</label>
+                                        </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            
+                                            <label for="exampleFormControlInput1" class="form-label" > Game 1</label>
+
+                                            <select name="card_game_one" formControlName="card_game_one" class="form-control" >
+                                                <option  *ngFor="let game of allCardGames" [value]="game">{{game}}</option>
+                                            </select>
+                                           
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput2" class="form-label"> Game 2</label>
+                                            <select name="card_game_two" formControlName="card_game_two" class="form-control" >
+                                                <option  *ngFor="let game of allCardGames" [value]="game">{{game}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput3" class="form-label"> Game 3</label>
+
+                                            <div>
+                                                <select name="card_game_three" formControlName="card_game_three" class="form-control" >
+                                                    <option  *ngFor="let game of allCardGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput4" class="form-label"> Game 4</label>
+                                            <select name="card_game_four" formControlName="card_game_four" class="form-control" >
+                                                <option  *ngFor="let game of allCardGames" [value]="game">{{game}}</option>
+                                            </select>
+                                        </div> 
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="formGroupCasualGames">
+                                    <div class="row">
+                                        <label style="font-weight: bold;">    Casual Games</label>
+                                        </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            
+                                            <label for="exampleFormControlInput1" class="form-label" > Game 1</label>
+                                            <select name="casual_game_one" formControlName="casual_game_one" class="form-control" >
+                                                <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                            </select>
+                                           
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput2" class="form-label"> Game 2</label>
+                                            <select name="casual_game_two" formControlName="casual_game_two" class="form-control" >
+                                                <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput3" class="form-label"> Game 3</label>
+
+                                            <div>
+                                                <select name="casual_game_three" formControlName="casual_game_three" class="form-control" >
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput4" class="form-label"> Game 4</label>
+                                            <select name="casual_game_four" formControlName="casual_game_four" class="form-control" >
+                                                <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput5" class="form-label"> Game 5</label>
+                                            <div>
+                                                <select name="casual_game_fivr" formControlName="casual_game_five" class="form-control" >
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput5" class="form-label"> Game 6</label>
+                                            <div>
+                                                <select name="casual_game_six" formControlName="casual_game_six" class="form-control" >
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label for="exampleFormControlInput5" class="form-label"> Game 7</label>
+                                            <div>
+                                                <select name="casual_game_seven" formControlName="casual_game_seven" class="form-control" >
+                                                    <option>Select</option>
+                                                    <option  *ngFor="let game of allNewAndCasualGames" [value]="game">{{game}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+  <div>
+    <div class="row">
+      
+            <div class="col p-4" *ngIf="access_permission_write">
+                <button type="button" class="btn btn-success float-right" style="margin: auto;"
+            (click)="submitGames()">Submit</button>
+            </div>
+            </div>
+           
+  </div>
+</div>
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+  </ngx-spinner>

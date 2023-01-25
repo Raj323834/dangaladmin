@@ -1,0 +1,109 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You don't have access to this section.</label>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+
+                                        <div class="col">
+                                            <label  class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                id="fromTime" placeholder="">
+                                                <h5><small  *ngIf="!searchParamsForm.controls['fromTime'].valid && 
+                                                    searchParamsForm.controls['fromTime']?.touched " style="color: red;">Enter From Time</small></h5>    
+                                            
+                                        </div>
+
+                                        <div class="col">
+                                            <label for="endTime" class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                id="endTime" placeholder="">
+                                                <h5><small  *ngIf="!searchParamsForm.controls['toTime'].valid && 
+                                                    searchParamsForm.controls['toTime']?.touched " style="color: red;"> Enter To Time</small></h5>    
+                                            
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getUserRegistrationDetails()" [disabled]="!searchParamsForm.valid">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i>
+                    User Registrations
+                </div>
+                <div class="col">
+                    <div>
+                            <div *ngIf="showDownloadButton">
+                                <a [href]="downloadUrl" [download]="download" style="font-weight: bold;color: green;">
+                                    Download
+                                  </a>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+  
+        
+        <mat-card *ngIf="!showDownloadButton" style="margin-bottom: 5px">
+            <div><span>No Data to Display</span></div>
+        </mat-card>
+       
+
+    </div>
+</div>
+
+
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+        <div class="modal-body">
+            <p style="white-space: pre-wrap">{{alert}}</p>
+            <br>
+            <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+        </div>
+
+    </div>
+</div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+<p style="color: white">Please Wait. </p>
+</ngx-spinner>

@@ -1,0 +1,225 @@
+<div *ngIf="!access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-body">
+            <mat-card>
+                <label>Sorry..!! </label><br>
+                <label>You dont have access to this section.</label>
+            </mat-card>
+
+        </div>
+    </div>
+</div>
+<div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Winning Report <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+                <div class="col">
+                    <div class="float-right">
+                        <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+                            style="float: right;">Find UserID</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+                                        <div class="col">
+                                            <label class="form-label">User ID</label>
+                                            <input type="text" class="form-control" formControlName="userId"
+                                                placeholder="User ID" [(ngModel)]="userID">
+                                        </div>
+
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getWinningReport()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> Winning Report
+                </div>
+                <div class="col">
+                    <!-- <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button" id="button-addon3"
+                            (click)="exportAsXLSX()" style="float: right;">download</button>
+
+                    </div> -->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+            <mat-card *ngIf="!this.result" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+
+            <mat-card>
+                <div *ngIf=this.result>
+
+
+                    <div class="row">
+                        <div class="col">
+                            <label style="font-weight:500;">User ID</label> <br>
+                            <label>{{userID}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Username</label> <br>
+                            <label>{{userName}}</label>
+                        </div>
+                    </div>
+                    <br>
+                    <label style="font-weight:500;">
+                        WINNINGS
+                    </label>
+                    <br>
+                    <br>
+
+                    <div class="row">
+                        <div class="col">
+                            <label style="font-weight:500;">Rummy </label> <br>
+                            <label>{{rummy}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Poker</label> <br>
+                            <label>{{poker}}</label>
+                        </div> <div class="col">
+                            <label style="font-weight:500;">Poker Tourney</label> <br>
+                            <label>{{pokerTourney}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Street Racer</label> <br>
+                            <label style="align-items: center;">{{streetRacer}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Runner No. 1</label> <br>
+                            <label>{{runnerNo1}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Fruit Split</label> <br>
+                            <label>{{fruitSplit}}</label>
+                        </div>
+                       
+
+                    </div>
+                    <br>
+                    <br>
+
+                    <div class="row">
+                        <div class="col">
+                            <label style="font-weight:500;">Candy Crush</label> <br>
+                            <label>{{candyCrush}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Fantasy Cricket</label> <br>
+                            <label>{{fantasyCricket}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Archery</label> <br>
+                            <label>{{archery}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Bubble Shooter</label> <br>
+                            <label>{{bubbleShooter}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Knife Hit</label> <br>
+                            <label>{{knifeHit}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Callbreak</label> <br>
+                            <label>{{callbreak}}</label>
+                        </div>
+                       
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <label style="font-weight:500;">Pool</label> <br>
+                            <label>{{pool}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Carrom</label> <br>
+                            <label>{{carrom}}</label>
+                        </div>
+                        <div class="col">
+                            <label style="font-weight:500;">Ludo</label> <br>
+                            <label>{{ludo}}</label>
+                        </div>
+                        <div class="col">
+
+                        </div>
+                        <div class="col">
+
+                        </div>
+                        <div class="col">
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </mat-card>
+
+
+
+        </div>
+    </div>
+</div>
+
+<!-- USerDetails block -->
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+</ngx-spinner>

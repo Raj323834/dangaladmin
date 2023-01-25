@@ -1,0 +1,421 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-body">
+      <mat-card >
+          <label>Sorry..!!  </label><br>
+          <label>You dont have access to this section.</label>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+  <div *ngIf="access_permission_read || access_permission_write" >
+    <div >
+      <div >
+        <h4 style="padding-left: 50px; padding-top: 40px;">DG Deals Banner </h4>
+      </div>
+
+      <div style="margin: 20px;">
+        <div class="row">
+            <div >
+              <label class="form-label">Rank</label>
+              <input type="text" class="form-control" [(ngModel)]="rank1" style="width: 50px;" alt="not available">
+            </div>
+              <div style="width: 150px;">
+                <label class="form-label">New Image</label>
+                <div style="text-align:center">
+                  <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+                  <p>
+                    <input type="file" (change)="handleImage($event.target.files,1)" (change)="selectFile($event,1)">
+                  </p>
+                  <div><img [src]="urlimageRead1" *ngIf="urlimageRead1" height="200px" width="150px" alt="not available"></div>
+                </div>
+                </div>
+              <div class="col">
+                <label class="form-label">Benifits</label>
+                <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits1"></textarea>
+                </div>
+                <div class="col">
+                  <label class="form-label">termsAndConditions</label>
+                  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions1" ></textarea>
+                  </div>
+                  <div class="col">
+                    <label class="form-label">code</label>
+                    <input type="text" [(ngModel)]="code1">
+                    </div>
+                    <div class="col">
+                      <label class="form-label">Navigated to</label>
+                      <select  [(ngModel)]="navigateTo1">
+                        <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+                        </select>
+                      </div>
+                <div class="col">
+                    <label class="form-label"> Already Uploaded image</label><br>
+                    <img [src]="url1" alt="loading" height="200px" width="150px" alt="not available" alt="not available">
+                </div>
+                <div>
+                  <h4 class="form-label"> Action</h4><br>
+                  <button style="background-color: red;" (click)="reset(1)">Clear</button>
+                </div>
+            </div>
+    </div>
+    
+    <div style="margin: 20px;">
+      <div class="row">
+        <div >
+          <input type="text" class="form-control" [(ngModel)]="rank2" style="width: 50px;">
+        </div>
+        <div style="width: 150px;">
+          <div style="text-align:center">
+            <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+            <p>
+              <input type="file" (change)="handleImage($event.target.files,2)" (change)="selectFile($event,2)">
+            </p>
+            <div><img [src]="urlimageRead2" *ngIf="urlimageRead2" height="200px" width="150px" alt="not available"></div>
+          </div>
+          </div>
+    <div class="col">
+      <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits2"></textarea>
+    </div>
+    <div class="col">
+      <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions2" ></textarea>
+      </div>
+      <div class="col">
+        <input type="text" [(ngModel)]="code2">
+        </div>
+        <div class="col">
+          <select  [(ngModel)]="navigateTo2">
+            <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+            </select>
+          </div>
+      <div class="col">
+        <img [src]="url2" alt="loading" height="200px" width="150px" alt="not available" alt="not available">
+    </div>
+  
+    <div>
+      <button style="background-color: red;" (click)="reset(2)">Clear</button>
+    </div>
+  
+    </div>
+    <div style="margin: 20px;">
+    
+      <div class="row">
+          <div >
+            <input type="text" class="form-control" [(ngModel)]="rank3" style="width: 50px;">
+          </div>
+          <div style="width: 150px;">
+            <div style="text-align:center">
+              <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+              <p>
+                <input type="file" (change)="handleImage($event.target.files,3)" (change)="selectFile($event,3)">
+              </p>
+              <div><img [src]="urlimageRead3" *ngIf="urlimageRead3" height="200px" width="150px" alt="not available"></div>
+            </div>
+            </div>
+      <div class="col">
+        <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits3"></textarea>
+      </div>
+      <div class="col">
+        <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions3" ></textarea>
+        </div>
+        <div class="col">
+          <input type="text" [(ngModel)]="code3">
+          </div>
+          <div class="col">
+            <select  [(ngModel)]="navigateTo3">
+              <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+              </select>
+            </div>
+        <div class="col">
+          <img [src]="url3" alt="loading" height="200px" width="150px" alt="not available" alt="not available">
+      </div>
+      <div>
+        <button style="background-color: red;" (click)="reset(3)">Clear</button>
+      </div>
+      </div>
+      
+  </div>
+  <div style="margin: 20px;">
+    <div class="row">
+        <div >
+          <input type="text" class="form-control" [(ngModel)]="rank4" style="width: 50px;">
+        </div>
+        <div style="width: 150px;">
+          <div style="text-align:center">
+            <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+            <p>
+              <input type="file" (change)="handleImage($event.target.files,4)" (change)="selectFile($event,4)">
+            </p>
+            <div><img [src]="urlimageRead4" *ngIf="urlimageRead4" height="200px" width="150px" alt="not available"></div>
+          </div>
+          </div>
+    <div class="col">
+      <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits4"></textarea>
+    </div>
+    <div class="col">
+      <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions4" ></textarea>
+      </div>
+      <div class="col">
+        <input type="text" [(ngModel)]="code4">
+        </div>
+        <div class="col">
+          <select  [(ngModel)]="navigateTo4">
+            <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+            </select>
+          </div>
+      <div class="col">
+        <img [src]="url4" alt="loading" height="200px" width="150px" alt="not available" alt="not available">
+    </div>
+    <div>
+      <button style="background-color: red;" (click)="reset(4)">Clear</button>
+    </div>
+  </div>
+  
+  </div>
+  <div style="margin: 20px;">
+  <div class="row">
+      <div >
+        <input type="text" class="form-control" [(ngModel)]="rank5" style="width: 50px;">
+      </div>
+      <div style="width: 150px;">
+        <div style="text-align:center">
+          <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+          <p>
+            <input type="file" (change)="handleImage($event.target.files,5)" (change)="selectFile($event,5)">
+          </p>
+          <div><img [src]="urlimageRead5" *ngIf="urlimageRead5" height="200px" width="150px" alt="not available"></div>
+        </div>
+        </div>
+  <div class="col">
+    <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits5"></textarea>
+  </div>
+  <div class="col">
+    <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions5" ></textarea>
+    </div>
+    <div class="col">
+      <input type="text" [(ngModel)]="code5">
+      </div>
+      <div class="col">
+        <select  [(ngModel)]="navigateTo5">
+          <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+          </select>
+        </div>
+    <div class="col">
+      <img [src]="url5" alt="loading" height="200px" width="150px" alt="not available" alt="not available">
+  </div>
+  <div>
+    <button style="background-color: red;" (click)="reset(5)">Clear</button>
+  </div>
+  </div>
+  
+  </div>
+  <div style="margin: 20px;">
+  <div class="row">
+    <div >
+      <input type="text" class="form-control" [(ngModel)]="rank6" style="width: 50px;">
+    </div>
+    <div style="width: 150px;">
+      <div style="text-align:center">
+        <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+        <p>
+          <input type="file" (change)="handleImage($event.target.files,6)" (change)="selectFile($event,6)">
+        </p>
+        <div><img [src]="urlimageRead6" *ngIf="urlimageRead6" height="200px" width="150px" alt="not available"></div>
+      </div>
+      </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits6"></textarea>
+  </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions6" ></textarea>
+  </div>
+  <div class="col">
+    <input type="text" [(ngModel)]="code6">
+    </div>
+    <div class="col">
+      <select  [(ngModel)]="navigateTo6">
+        <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+        </select>
+      </div>
+  <div class="col">
+    <img [src]="url6" alt="loading" height="200px" width="150px" alt="not available" alt="not available">
+  </div>
+  <div>
+  <button style="background-color: red;" (click)="reset(6)">Clear</button>
+  </div>
+  </div>
+  
+  </div>
+  <div style="margin: 20px;">
+  <div class="row">
+    <div >
+      <input type="text" class="form-control" [(ngModel)]="rank7" style="width: 50px;">
+    </div>
+    <div style="width: 150px;">
+      <div style="text-align:center">
+        <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+        <p>
+          <input type="file" (change)="handleImage($event.target.files,7)" (change)="selectFile($event,7)">
+        </p>
+        <div><img [src]="urlimageRead7" *ngIf="urlimageRead7" height="200px" width="150px" alt="not available"></div>
+      </div>
+      </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits7"></textarea>
+  </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions7" ></textarea>
+  </div>
+  <div class="col">
+    <input type="text" [(ngModel)]="code7">
+    </div>
+    <div class="col">
+      <select  [(ngModel)]="navigateTo7">
+        <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+        </select>
+      </div>
+  <div class="col">
+    <img [src]="url7" alt="loading" height="200px" width="150px" alt="not available">
+  </div>
+  <div>
+  <button style="background-color: red;" (click)="reset(7)">Clear</button>
+  </div>
+  </div>
+  
+  </div>
+  <div style="margin: 20px;">
+  <div class="row">
+    <div >
+      <input type="text" class="form-control" [(ngModel)]="rank8" style="width: 50px;">
+    </div>
+    <div style="width: 150px;">
+      <div style="text-align:center">
+        <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+        <p>
+          <input type="file" (change)="handleImage($event.target.files,8)" (change)="selectFile($event,8)">
+        </p>
+        <div><img [src]="urlimageRead8" *ngIf="urlimageRead8" height="200px" width="150px" alt="not available"></div>
+      </div>
+      </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits8"></textarea>
+  </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions8" ></textarea>
+  </div>
+  <div class="col">
+    <input type="text" [(ngModel)]="code8">
+    </div>
+    <div class="col">
+      <select  [(ngModel)]="navigateTo8">
+        <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+        </select>
+      </div>
+  <div class="col">
+    <img [src]="url8" alt="loading" height="200px" width="150px" alt="not available">
+  </div>
+  <div>
+  <button style="background-color: red;" (click)="reset(8)">Clear</button>
+  </div>
+  </div>
+  
+  </div>
+  <div style="margin: 20px;">
+  <div class="row">
+    <div >
+      <input type="text" class="form-control" [(ngModel)]="rank9" style="width: 50px;">
+    </div>
+    <div style="width: 150px;">
+      <div style="text-align:center">
+        <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+        <p>
+          <input type="file" (change)="handleImage($event.target.files,9)" (change)="selectFile($event,9)">
+        </p>
+        <div><img [src]="urlimageRead9" *ngIf="urlimageRead9" height="200px" width="150px" alt="not available"></div>
+      </div>
+      </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits9"></textarea>
+  </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions9" ></textarea>
+  </div>
+  <div class="col">
+    <input type="text" [(ngModel)]="code9">
+    </div>
+    <div class="col">
+      <select  [(ngModel)]="navigateTo9">
+        <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+        </select>
+      </div>
+  <div class="col">
+    <img [src]="url9" alt="loading" height="200px" width="150px" alt="not available">
+  </div>
+  <div>
+  <button style="background-color: red;" (click)="reset(9)">Clear</button>
+  </div>
+  </div>
+  
+  </div>
+  <div style="margin: 20px;">
+  <div class="row">
+    <div >
+      <input type="text" class="form-control" [(ngModel)]="rank10" style="width: 50px;">
+    </div>
+    <div style="width: 150px;">
+      <div style="text-align:center">
+        <div [innerHtml]='msg' *ngIf="msg" style="color: red;"></div>
+        <p>
+          <input type="file" (change)="handleImage($event.target.files,10)" (change)="selectFile($event,10)">
+        </p>
+        <div><img [src]="urlimageRead10" *ngIf="urlimageRead10" height="200px" width="150px" alt="not available"></div>
+      </div>
+      </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="benefits10"></textarea>
+  </div>
+  <div class="col">
+  <textarea class="form-control" rows="10" cols="100" [(ngModel)]="termsAndConditions10" ></textarea>
+  </div>
+  <div class="col">
+    <input type="text" [(ngModel)]="code10">
+    </div>
+    <div class="col">
+      <select  [(ngModel)]="navigateTo10">
+        <option  *ngFor="let bannerNavigation of BannerNavigation" [value]="bannerNavigation">{{bannerNavigation}} </option>
+        </select>
+      </div>
+  <div class="col">
+    <img [src]="url10" alt="loading" height="200px" width="150px" alt="not available">
+  </div>
+  <div>
+  <button style="background-color: red;" (click)="reset(10)">Clear</button>
+  </div>
+  </div>
+  
+  </div>
+  
+    </div>
+  
+    <div class="modal-footer" *ngIf="access_permission_write">
+      <button class="bg-primary" (click)="updateBannerNetworkCall()">Submit</button>
+      </div>
+  
+  </div>
+  </div>
+  
+  <div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-body">
+              <p style="white-space: pre-wrap">{{alert}}</p>
+              <br>
+              <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+          </div>
+      </div>
+  </div>
+  </div>
+  
+  <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+  <p style="color: white">Please Wait. </p>
+  </ngx-spinner>

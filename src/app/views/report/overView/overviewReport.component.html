@@ -1,0 +1,509 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+
+                                        <div class="col">
+                                            <label  class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label  class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                 placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getOverViewReportDetails()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> Overview Report
+                </div>
+                <div class="col">
+                    <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button" id="button-addon3"
+                            (click)="exportAsXLSX()" style="float: right;">download</button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-form-field>
+                    <mat-label>Filter</mat-label>
+                    <input matInput placeholder="" (keyup)="applyFilter($event)">
+                </mat-form-field>
+            </mat-card>
+            <br><br>
+            <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                    class="table table-borderless ">
+
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">Date
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.date}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="uniqueLogins">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Unique Logins</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.uniqueLogins}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="registrations">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Registrations</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.registrations}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="newDepositors">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            New Depositors
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.newDepositors}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="totalDeposits">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Total Deposits
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.totalDeposits}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalWithdrawals">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Total Withdrawals
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.totalWithdrawals}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalRake">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">Total Rake
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.totalRake}} </td>
+                    </ng-container>
+
+
+
+                    <ng-container matColumnDef="Details">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header
+                            style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Details
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModalToggle2"
+                                class="btn btn-outline-dark btn-sm btn-block"
+                                style=" text-align: center;padding-left: 5px;padding-right:5px"
+                                (click)="onBtnClick(row)">Details</button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+            </mat-card>
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="this.modalData" class="modal"  [style.display]="showModal ? 'block' : 'none'"
+    style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h5 *ngIf="this.modalData"> Details</h5>
+                <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+            </div>
+
+
+            <div *ngIf="this.modalData" class="modal-body">
+                <div class="row">
+
+
+                    <div class="col">
+                        <label  class="form-label" >Date</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.date}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Unique Logins</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.uniqueLogins}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Registrations</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.registrations}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">New depositors</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.newDepositors}} readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Total Deposits</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.totalDeposits}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Total Withdrawals</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.totalWithdrawals}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Total Instant Withdrawals</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.totalInstantWithdrawals}} readonly>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+                <br>
+                <b> Rake </b>
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Total Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.totalRake}} readonly>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+
+                    <div class="col">
+                        <label  class="form-label">Poker Rake</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.modalData.pokerRake}} readonly>
+                    </div>
+
+                    <div class="col">
+                        <label  class="form-label">Fantasy Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.fantasyRake}} readonly/>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">CallBreak Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.callbreakRake}} readonly>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Pool Rake</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.modalData.poolRake}} readonly>
+                    </div>
+
+
+                    <div class="col">
+                        <label  class="form-label">Carrom Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.carromRake}} readonly>
+                    </div>
+
+                    <div class="col">
+                        <label  class="form-label">Fruit Split Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.fruitSplitRake}} readonly>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Street Racer Rake</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.modalData.streetRacerRake}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Bubble Shooter Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.bubbleShooterRake}} readonly>
+                    </div>
+
+
+                    <div class="col">
+                        <label  class="form-label">Runner Number1 Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.runnerNumber1Rake}} readonly>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Rummy Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.rummyRake}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Knife Cut Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.knifeCutRake}} readonly>
+                    </div>
+
+
+                    <div class="col">
+                        <label  class="form-label">Archery Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.archeryRake}} readonly>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Candy Crush Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.candyCrushRake}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Ludo Rake</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.ludoRake}} readonly>
+                    </div>
+
+
+                    <div class="col">
+
+                    </div>
+
+
+                </div>
+
+                <br>
+                <b> Games </b>
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Total Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.totalGames}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Poker Games</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.modalData.pokerGames}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Fantasy Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.fantasyGames}} readonly>
+                    </div>
+
+                    <div class="col">
+                        <label  class="form-label">CallBreak Games</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.modalData.callbreakGames}} readonly>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Pool Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.poolGames}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Carrom Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.carromGames}} readonly>
+                    </div>
+
+                    <div class="col">
+                        <label  class="form-label">Fruit Split Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.fruitSplitGames}} readonly>
+                    </div>
+
+
+
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Street Racer Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.streetRacerGames}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Bubble Shooter Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.bubbleShooterGames}} readonly>
+                    </div>
+
+                    <div class="col">
+                        <label  class="form-label">Runner Number1 Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.runnerNumber1Games}} readonly>
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Rummy Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.rummyGames}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Archery Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.archeryGames}} readonly>
+                    </div>
+
+                    <div class="col">
+                        <label  class="form-label">Knife Cut Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.knifeCutGames}} readonly>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Candy crush Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.candyCrushGames}} readonly>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Ludo Games</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.ludoGames}} readonly>
+                    </div>
+
+                    <div class="col">
+
+                    </div>
+
+                </div>
+
+                <br>
+                <br>
+                <b> System Balances </b>
+                <br>
+                <br>
+
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Deposit</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.systemDepositBalance}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Withdrawal</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.systemWithdrawalBalance}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Promo</label>
+                        <input type="text" class="form-control" placeholder=""
+                            value={{this.modalData.systemPromoBalance}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Locked</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.systemLockedBalance}} readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label  class="form-label">Poker Deposit</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.systemPokerDepositBalance}} readonly>
+                    </div>
+                    <div class="col">
+                        <label  class="form-label">Poker Withdrawal</label>
+                        <input type="text" class="form-control"  placeholder=""
+                            value={{this.modalData.systemPokerWithdrawalBalance}} readonly>
+                    </div>
+                </div>
+                <br>
+
+                <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="closeModal()">Close</button>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+</ngx-spinner>

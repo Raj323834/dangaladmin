@@ -1,0 +1,69 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-body">
+      <mat-card >
+          <label>Sorry..!!  </label><br>
+          <label>You dont have access to this section.</label>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+<div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+  <div class="card" id="new47">
+    <div class="card-header">
+      <i class="fa fa-font-awesome"></i> Delete User ID
+      <div class="card-header-actions">
+        <div class="col">
+            <div class="float-right">
+                <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+                    style="float: right;">Find UserID</button>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="card-body">
+      <div class="border bg-light">
+            <form [formGroup]="searchParamsUserForm">
+              <div class="form-group">
+                <div class="p-3">
+                  <div class="row ">
+                    <div class="col">
+                      <label for="mobile_number">User Id</label>
+                      <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" id="userId" placeholder="User Id"
+                            formControlName="userId" [(ngModel)]="userId">
+                        </div>
+                        <div class="col" *ngIf="access_permission_write">
+                          <button type="button" class="btn btn-success float-right" (click)="deleteUser()">Delete User</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+<div class="modal infoModal" [style.display]="showAlertModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <b>{{alert}}.</b>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+    </div>
+    </div>
+  </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+  <p style="color: white">Please Wait. </p>
+</ngx-spinner>

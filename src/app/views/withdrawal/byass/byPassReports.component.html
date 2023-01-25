@@ -1,0 +1,198 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+  
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+                <div class="col">
+                    <div class="float-right" *ngIf="access_permission_write">
+                        <button *ngIf="access_permission_write" class="btn btn-success btn-sm btn-block" type="button" (click)="showAddByPassDialog()"
+                            style="float: right;">Add Bypass user</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> By Pass Report
+                </div>
+                <div class="col">
+                    <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button"
+                            (click)="exportAsXLSX()" style="float: right;">download</button> 
+                           
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+
+            <br><br>
+            <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+
+            <div class="card-header">
+                
+                        <mat-form-field style="width: 450px;">
+                            <h4 for=""> Filter </h4>
+                            <input style="background-color: white;" class="form-control"
+                             (keyup)="applyfilter($event.target.value)" matInput >
+                        </mat-form-field>
+    
+            </div>
+    
+
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                    class="table table-borderless ">
+
+
+
+                    <ng-container matColumnDef="userId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> User ID
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" class="mat-row" style=" cursor: pointer; color: royalblue;"
+                            (click)="getUserDetail('userID',row.userId)"> {{row.userId}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="maxAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Max Amount</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.maxAmount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="maxDailyCount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            max Daily Count</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.maxDailyCount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="createdDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Created Date</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.createdDate| date: 'yyyy-MM-dd \n hh:mm'}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Actions">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Action
+                        </th><br>
+                        <td mat-cell  *matCellDef="let row" style=" text-align: center;">
+                            <div *ngIf="access_permission_write">
+                                <button *ngIf="access_permission_write"  type="button" data-bs-toggle="modal"  class="btn btn-outline-dark btn-sm btn-block" style=" text-align: center;padding-left: 5px;padding-right:5px" (click)="showConfirmationBox(row.userId)">Delete</button>
+                            </div>
+                       </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+            </mat-card>
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<!-- USerDetails block -->
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+<!-- USerDetails block ends -->
+
+<div class="modal" [style.display]="showAddByPass ? 'block' : 'none'"style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 >Add Bypass</h5>
+          <button type="button" class="close" data-dismiss="modal" (click)="closeAddByPassDialog()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col">
+              <label  class="form-label">UserId</label>
+              <input type="text" class="form-control"  placeholder="user id"  [(ngModel)]="userId" >
+            </div>
+            <div class="col">
+              <label  class="form-label">Maximum Amount</label>
+              <input type="number" class="form-control"  [(ngModel)]="maxAmount" >
+            </div>
+          </div>
+          <div class="row">
+            
+            <div class="col">
+              <label  class="form-label">Max Daily Count</label>
+              <input type="number" class="form-control"  [(ngModel)]="maxDailyCount" >
+            </div>
+            <div class="col">
+                
+              </div>
+          </div>
+          <br>
+          <button  class="btn btn-primary me-md-3" type="button" data-dismiss="modal" (click)="addByPassUser()">Create</button>
+          <button  class="btn btn-primary me-md-3" type="button" data-dismiss="modal" (click)="closeAddByPassDialog()">Close</button>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal" [style.display]="showConfirmBox ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+              <p>Are you sure you want to delete this User ?</p>
+              <p>
+                {{deleteUserId}}
+              </p>
+              <button type="button" class="btn btn-success" (click)="deleteUserIDApiCall(deleteUserId)">Yes</button>
+              <button  type="button" class="btn btn-danger" (click)="closeConfirmationBox()">No</button>
+            </div>
+            </div>
+        </div>
+
+  </div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+</ngx-spinner>
+
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)">
+</app-user-detail>

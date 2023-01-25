@@ -1,0 +1,697 @@
+<div *ngIf="!access_permission_read && !access_permission_write " class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-body">
+      <mat-card>
+        <label>Sorry..!! </label><br>
+        <label>You dont have access to this section.</label>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+<div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-header">
+      <i class="fa fa-picture-o"></i>Bonus <span class="badge badge-info"></span>
+      <div class="card-header-actions">
+        <div class="col">
+          <div class="float-right" *ngIf="access_permission_write">
+            <button class="btn btn-success btn-sm btn-block" type="button" (click)="openNewModal()"
+              style="float: right;">Create New Bonus</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card card-default">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <i class="fa fa-align-justify"></i> Bonus
+        </div>
+      </div>
+
+    </div>
+    <div class="card-body">
+
+      <mat-form-field>
+        <mat-label></mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+        <div><span>No Data to Display</span></div>
+      </mat-card>
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <div class="card-header">
+          <mat-form-field style="width: 450px;">
+            <h4 for=""> Filter </h4>
+            <input style="background-color: white;" class="form-control" (keyup)="applyfilter($event.target.value)"
+              matInput>
+          </mat-form-field>
+        </div>
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" class="table table-borderless ">
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px "> Bonus ID
+            </th><br>
+            <td mat-cell *matCellDef="let row" class="mat-row"
+              style=" cursor: pointer; color: royalblue;padding-left: 5px;padding-right:5px" (click)="BonusInfo(row)">
+              {{row.id}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px "> Code
+            </th><br>
+            <td mat-cell *matCellDef="let row" class="mat-row"> {{row.code}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px"> Description
+            </th><br>
+            <td mat-cell *matCellDef="let row" style="  padding-left: 5px;padding-right:5px">
+              {{row.description}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="depositInfo.minAmount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Minimum Amount
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" padding-left: 5px;padding-right:5px">
+              {{row.depositInfo.minAmount}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Active </th><br>
+            <td mat-cell *matCellDef="let row" style="padding-left: 5px;padding-right:5px ">
+              {{row.active}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Actions">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+              style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Action
+            </th><br>
+            <td mat-cell *matCellDef="let row" style=" text-align: center;">
+              <div *ngIf="access_permission_write">
+                <button *ngIf="access_permission_write" type="button" data-bs-toggle="modal"
+                  class="btn btn-outline-dark btn-sm btn-block"
+                  style=" text-align: center;padding-left: 5px;padding-right:5px"
+                  (click)="BonusInfo(row)">Update</button>
+              </div>
+
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        </table>
+      </mat-card>
+
+
+
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+        </mat-paginator>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="this.modalData" class="modal" [style.display]="showModal ? 'block' : 'none'" style="overflow-y: scroll;">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Bonus Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="resetform()"
+          (click)="closeModal()">&times;</button>
+      </div>
+
+      <!--Update Bonus -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Bonus ID</label>
+            <input type="text" class="form-control" value={{this.modalData.id}} readonly>
+          </div>
+          <div class="col">
+            <label class="form-label">Code</label>
+            <input type="text" class="form-control" value={{this.modalData.code}} readonly>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col">
+            <label class="form-label">Expire Days</label>
+            <input type="text" class="form-control" value={{this.modalData.expireDays}} [(ngModel)]="expireDays">
+          </div>
+          <div class="col">
+            <label class="form-label">Type</label>
+            <input type="text" class="form-control" value={{this.modalData.type}} readonly>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+
+            <label class="form-label">Active from (DD/MM/YYYY HH:MM:SS)</label>
+            <input type="text" class="form-control" name="activefrom" [(ngModel)]="ActiveFrom4"
+              placeholder="DD/MM/YYYY HH:MM:SS" (change)="validatedate(ActiveFrom4)">
+
+          </div>
+          <div class="col">
+            <label class="form-label">Active till (DD/MM/YYYY HH:MM:SS) </label>
+            <input type="text" class="form-control" name="activetill" [(ngModel)]="ActiveTill4"
+              placeholder="DD/MM/YYYY HH:MM:SS" (change)="validatedate(ActiveTill4)">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-control" value={{this.modalData.description}} [(ngModel)]="DescriptionNew">
+          </div>
+          <div class="col">
+            <label class="form-label">Active(*)</label>
+            <div>
+              <select class="form-select form-control" value={{this.modalData.active}} [(ngModel)]="IsActive">
+                <option value="true">true</option>
+                <option value="false">false</option>
+
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <br>
+        <mat-expansion-panel (click)="onTypeSelectedupdate(type2)" (click)="onDepositTypeSelected3(DepositType)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <label style="font-weight: 700;">Deposit Info</label>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div *ngIf="depositInfo">
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Type</label>
+                <input type="text" class="form-control" value={{this.modalData.depositInfo.type}}
+                  [(ngModel)]="DepositType2" readonly>
+              </div>
+              <div class="col">
+                <label class="form-label">Min Amount</label>
+                <input type="text" class="form-control" value={{this.modalData.depositInfo.minAmount}}
+                  [(ngModel)]="MinAmount">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Visible in UI</label>
+                <select type="text" class="form-control" value={{this.modalData.depositInfo.visibleInUi}}
+                  [(ngModel)]="VisibleInUI">
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+              </div>
+              <div class="col">
+                <label class="form-label">Percentage</label>
+                <input type="text" class="form-control" value={{this.modalData.depositInfo.percentage}}
+                  [(ngModel)]="Percentage">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Max Bonus</label>
+                <input type="number" class="form-control" value={{this.modalData.depositInfo.maxBonus}}
+                  [(ngModel)]="MaxBonus">
+              </div>
+              <div class="col">
+                <label class="form-label">Promo Percentage</label>
+                <input type="text" class="form-control" value={{this.modalData.depositInfo.promoPercentage}}
+                  [(ngModel)]="PromoPercentage">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Locked Percentage</label>
+                <input type="text" class="form-control" value={{this.modalData.depositInfo.lockedPercentage}}
+                  [(ngModel)]="LockedPercentage">
+              </div>
+              <div class="col">
+                <label class="form-label">Withdrawal Percentage</label>
+                <input type="text" class="form-control" value={{this.modalData.depositInfo.withdrawalPercentage}}
+                  [(ngModel)]="WithdrawalPercentage">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Deposit Percentage</label>
+                <input type="text" class="form-control" value={{this.modalData.depositInfo.depositPercentage}}
+                  [(ngModel)]="DepositPercentage">
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+          </div>
+          <br>
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel (click)="onDepositTypeSelected3(this.modalData.depositInfo.type)" hideToggle>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <label style="font-weight: 700;">Restrictions</label>
+            </mat-panel-title>
+
+          </mat-expansion-panel-header>
+          <div class="row">
+
+            <div class="col">
+              <label class="form-label">Max usage per user</label>
+              <input type="text" class="form-control" value={{modalData.restriction.maxUsagePerUser}}
+                [(ngModel)]="MaxUsagePerUser" [readonly]="!canChangeMaxOverallUser">
+            </div>
+            <div class="col">
+              <label class="form-label">Overall Max Usage</label>
+              <input type="text" class="form-control" value={{modalData.restriction.overallMaxUsage}}
+                [(ngModel)]="OverallMaxUsage">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label class="form-label">User Specific</label>
+              <select class="form-select form-control" value={{this.modalData.restriction.userSpecific}}
+                [(ngModel)]="UserSpecific2">
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+
+            </div>
+            <div class="col">
+              <label class="form-label">User IDs</label>
+              <input type="text" class="form-control" value={{this.modalData.restriction.userIds}}
+                pattern="/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i"
+                [(ngModel)]="userIds">
+            </div>
+          </div>
+          <div *ngIf="BonuaUsageIntervalSelected2">
+
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Bonus Usage Interval </label>
+                <select value={{this.modalData.restriction.bonusUsageInterval}} class="form-select form-control"
+                  (change)=" onBonuaUsageIntervalSelected(BonusUsageInterval)" [(ngModel)]="BonusUsageInterval">
+                  <option>select</option>
+                  <option value="DAILY">DAILY</option>
+                  <option value="WEEKLY">WEEKLY</option>
+                  <option value="MONTHLY">MONTHLY</option>
+                  <option value="ALL_TIME">ALL TIME</option>
+                </select>
+              </div>
+              <div class="col">
+
+              </div>
+
+            </div>
+          </div>
+
+
+          <br>
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel (click)="onDepositTypeSelected3(DepositType2)" (click)="onTypeSelectedupdate(type2)"
+          hideToggle>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <label style="font-weight: 700;">SignUp Info</label>
+
+            </mat-panel-title>
+
+          </mat-expansion-panel-header>
+          <div *ngIf="signupInfo">
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Instant Bonus Amount</label>
+                <input type="text" class="form-control" value={{this.modalData.signUpInfo.instantBonusAmount}}
+                  [(ngModel)]="Amount">
+              </div>
+              <div class="col">
+                <label class="form-label">Instant Promo Amount</label>
+                <input type="text" class="form-control" value={{this.modalData.signUpInfo.instantPromoAmount}}
+                  [(ngModel)]="PromoInstantAmount">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <label class="form-label">Instant Withdrawal Amount</label>
+                <input type="text" class="form-control" value={{this.modalData.signUpInfo.instantWithdrawalAmount}}
+                  [(ngModel)]="InstantWithdrawalAmount">
+              </div>
+              <div class="col">
+                <label class="form-label">Instant Deposit Amount</label>
+                <input type="text" class="form-control" value={{this.modalData.signUpInfo.instantDepositAmount}}
+                  [(ngModel)]="InstantDepositAmount">
+              </div>
+            </div>
+            <br>
+          </div>
+        </mat-expansion-panel>
+
+        <div class="modal-footer" *ngIf="access_permission_write">
+          <button *ngIf="access_permission_write" class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+            (click)="updateBonus()">Save</button>
+          <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="resetform()"
+            (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" [style.display]="showNewModal ? 'block' : 'none'" style="overflow-y: scroll;">
+  <div class="modal-dialog modal-lg  modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Add New Bonus</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="resetform()"
+          (click)="closeNewModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Code(*)</label>
+            <input type="text" class="form-control" [(ngModel)]="Code" pattern="^[a-zA-Z0-9]+$">
+          </div>
+          <div class="col">
+            <label class="form-label">Type(*)</label>
+            <div class="input-group mb-6">
+
+              <select class="form-select form-control" (change)="onTypeSelected(Type)"
+                (change)="onDepositTypeSelected3(Type)" [(ngModel)]="Type">
+                <option *ngFor="let type of types" [value]="type">{{type}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Description(*)</label>
+            <input type="text" class="form-control" [(ngModel)]="DescriptionNew">
+          </div>
+          <div class="col">
+            <label class="form-label">Expire Days(*)</label>
+            <input type="text" class="form-control" [(ngModel)]="expireDays">
+          </div>
+          <div class="col">
+            <label class="form-label">Active(*)</label>
+            <div class="input-group mb-6">
+              <select class="form-select form-control" [(ngModel)]="IsActiveNew">
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Active From(*)</label><br>
+            <input type="datetime-local" class="form-control" [(ngModel)]="ActiveFrom">
+          </div>
+          <div class="col">
+            <label class="form-label">Active Till(*)</label><br>
+            <input type="datetime-local" class="form-control" [(ngModel)]="ActiveTill">
+          </div>
+        </div>
+        <br>
+        <div *ngIf="depositInfo">
+          <div class="modal-header">
+            <h5>Deposit Info</h5>
+          </div><br>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Type(*)</label>
+              <div class="input-group mb-6">
+                <select class="form-select form-control" (change)="onDepositTypeSelected3(DepositType)"
+                  [(ngModel)]="DepositType">
+                  <option value="FIRST">FIRST</option>
+                  <option value="OTHERS">OTHERS</option>
+                </select>
+              </div>
+            </div>
+            <div class="col">
+              <label class="form-label">Min Amount</label>
+              <input type="text" class="form-control" [(ngModel)]="MinAmount">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Percentage</label>
+              <input type="text" class="form-control" [(ngModel)]="Percentage">
+            </div>
+            <div class="col">
+              <label class="form-label">Max Bonus</label>
+              <input type="number" min="0" class="form-control" [(ngModel)]="MaxBonus">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Locked Percentage</label>
+              <input type="text" class="form-control" [(ngModel)]="LockedPercentage">
+            </div>
+            <div class="col">
+              <label class="form-label">Deposit Percentage</label>
+              <input type="text" class="form-control" [(ngModel)]="DepositPercentage">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Promo Percentage</label>
+              <input type="text" class="form-control" [(ngModel)]="PromoPercentage">
+            </div>
+            <div class="col">
+              <label class="form-label">Withdrawal Percentage</label>
+              <div class="input-group mb-6">
+                <input type="text" class="form-control" [(ngModel)]="WithdrawalPercentage">
+
+              </div>
+            </div>
+          </div>
+          <div class="row">
+
+            <div class="col">
+              <label class="form-label">Visible in UI</label>
+              <div class="input-group mb-6">
+                <select class="form-select form-control" [(ngModel)]="VisibleInUI">
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+              </div>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="signupInfo">
+          <div class="modal-header">
+            <h5>Signup Info</h5>
+          </div>
+          <br>
+          <div class="row">
+
+            <div class="col">
+              <label class="form-label">Amount(*)</label>
+              <input type="text" class="form-control" [(ngModel)]="Amount">
+            </div>
+            <div class="col">
+              <label class="form-label">Promo Instant Amount</label>
+              <input type="text" class="form-control" [(ngModel)]="PromoInstantAmount">
+            </div>
+          </div>
+
+          <div class="row">
+
+
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Instant Deposit Amount</label>
+              <input type="text" class="form-control" [(ngModel)]="InstantDepositAmount">
+            </div>
+            <div class="col">
+              <label class="form-label">Instant Withdrawal Amount</label>
+              <input type="text" class="form-control" [(ngModel)]="InstantWithdrawalAmount">
+            </div>
+          </div>
+        </div>
+        <br>
+
+        <div class="modal-header">
+          <h5>Restriction</h5>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Max Usage per User</label>
+            <input type="text" class="form-control" [(ngModel)]="MaxUsagePerUser" [readonly]="!canChangeMaxOverallUser">
+          </div>
+          <div class="col">
+            <label class="form-label">Overall Max Usage</label>
+            <input type="text" class="form-control" [(ngModel)]="OverallMaxUsage">
+          </div>
+        </div>
+        <div class=" row">
+          <div class="col">
+            <label class="form-label">User Specific</label>
+            <div class="input-group mb-6">
+              <select class="form-select form-control" [(ngModel)]="UserSpecific">
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <label class="form-label">User ID(Enter multiple userId with only comma separated)</label>
+            <input type="text" class="form-control"
+              pattern="/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i"
+              [(ngModel)]="userIds">
+          </div>
+        </div>
+        <div *ngIf="BonuaUsageIntervalSelected2">
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Bonus Usage Interval</label>
+              <div class="input-group mb-6">
+
+                <select class="form-select form-control" (change)=" onBonuaUsageIntervalSelected(BonusUsageInterval)"
+                  [(ngModel)]="BonusUsageInterval">
+                  <option>select</option>
+                  <option value="DAILY">DAILY</option>
+                  <option value="WEEKLY">WEEKLY</option>
+                  <option value="MONTHLY">MONTHLY</option>
+                  <option value="ALL_TIME">ALL TIME</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col"></div>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+          (click)="createNewBonus()">Create</button>
+        <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="resetform()"
+          (click)="closeNewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <p style="white-space: pre-wrap">{{alert}}</p>
+
+        <br>
+        <p *ngIf="showAlreadyActiveBonus" style="white-space: pre-wrap">{{activeBonusId}}</p>
+        <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal" [style.display]="showAlertModalUpdate ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <p style="white-space: pre-wrap">{{alert}}</p>
+
+        <br>
+        <p *ngIf="showAlreadyActiveBonus" style="white-space: pre-wrap">{{activeBonusId}}</p>
+        <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+  <p style="color: white">Please Wait. </p>
+</ngx-spinner>
+
+
+
+
+<script>
+
+  function validatedate(inputText) {
+    console.log(inputText)
+    var dateformat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    // Match the date format through regular expression
+    if (inputText.value.match(dateformat)) {
+      inputText.focus();
+      //Test which seperator is used '/' or '-'
+      var opera1 = inputText.value.split('/');
+      var opera2 = inputText.value.split('-');
+      lopera1 = opera1.length;
+      lopera2 = opera2.length;
+      // Extract the string into month, date and year
+      if (lopera1 > 1) {
+        var pdate = inputText.value.split('/');
+      }
+      else if (lopera2 > 1) {
+        var pdate = inputText.value.split('-');
+      }
+      var dd = parseInt(pdate[0]);
+      var mm = parseInt(pdate[1]);
+      var yy = parseInt(pdate[2]);
+      var ListofDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      if (mm == 1 || mm > 2) {
+        if (dd > ListofDays[mm - 1]) {
+          alert('Invalid date format!');
+          return false;
+        }
+      }
+      if (mm == 2) {
+        var lyear = false;
+        if ((!(yy % 4) && yy % 100) || !(yy % 400)) {
+          lyear = true;
+        }
+        if ((lyear == false) && (dd >= 29)) {
+          alert('Invalid date format!');
+          return false;
+        }
+        if ((lyear == true) && (dd > 29)) {
+          alert('Invalid date format!');
+          return false;
+        }
+      }
+    }
+    else {
+      alert("Invalid date format!");
+      inputText.focus();
+      return false;
+    }
+  }
+</script>

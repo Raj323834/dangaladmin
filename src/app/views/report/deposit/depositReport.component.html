@@ -1,0 +1,239 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+      
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+                  <div class="col">
+                    <div class="float-right">
+                        <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+                            style="float: right;">Find UserID</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">ID</label>
+                                            <input type="text" class="form-control" formControlName="id"
+                                                 placeholder="Internal Reference Number">
+                                        </div>
+                                       <div class="col">
+                                            <label  class="form-label">User ID</label>
+                                            <input type="text" class="form-control" formControlName="userId"
+                                                 placeholder="userId" [(ngModel)]="userID" >
+                                        </div>
+                                        <div class="col">
+                                            <label  class="form-label">Username</label>
+                                            <input type="text" class="form-control" formControlName="userName"
+                                                 placeholder="userName">
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">Amount</label>
+                                            <input type="text" class="form-control" formControlName="amount"
+                                                 placeholder="Amount">
+                                        </div>
+                                        <div class="col">
+                                            <label  class="form-label"> Status</label>
+                                        
+                                            <div>
+                                                <select class="form-select form-control form-control-sm"
+                                                    formControlName="txStatus">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="INITIATED">INITIATED</option>
+                                                    <option value="CAPTURED">SUCCESS</option>
+                                                    <option value="CREATED">CREATED</option>
+                                                    <option value="PAID">PAID</option>
+                                                    <option value="FAILED">FAILED</option>
+                                                    <option value="CANCELLED">CANCELLED</option>
+                                                    <option value="USER_DROPPED">USER_DROPPED</option>
+                                                
+                                                </select>
+                                            </div>
+                                        </div>
+                                       <div class="col">
+                                            <label  class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label  class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                 placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getDepositReportDetails()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> Deposit Report
+                </div>
+                <div class="col">
+                    <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button"
+                            (click)="exportAsXLSX()" style="float: right;">download</button>
+                            
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-form-field>
+                    <mat-label>Filter</mat-label>
+                    <input matInput placeholder="" (keyup)="applyFilter($event)">
+                </mat-form-field>
+            </mat-card>
+           <mat-card *ngIf="datacome">
+            <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+            <br><br>
+            <div><span>No Data to Display</span></div>
+        </mat-card>
+           </mat-card>
+            
+            <mat-card *ngIf="clear">
+                <br><br>
+                <div><span>No Data to Display</span></div>
+        
+            </mat-card>
+
+            <mat-card *ngIf="datacome">
+                <mat-card *ngIf="dataSource?.filteredData.length">
+                    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                    class="table table-borderless ">
+    
+                    <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+                    <ng-container matColumnDef="internalReferenceNumber">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> ID</th><br>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;">
+                            {{row.internalReferenceNumber}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="userId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px "> User ID
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" class="mat-row" style=" cursor: pointer; color: royalblue;"
+                            (click)="getUserDetail('userID',row.userId)"> {{row.userId}}</td>
+                    </ng-container>
+    
+    
+                    <ng-container matColumnDef="userName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> UserName
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">
+                            {{row.userName}} </td>
+                    </ng-container>
+    
+                  <br>
+    
+    
+                    <ng-container matColumnDef="paymentTransactionAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">Payment Transaction Amount</th><br>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;">
+                            {{row.paymentTransactionAmount}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="transactionStatusDescription">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Transaction Status Description
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                            {{row.transactionStatusDescription}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="promoCodeUsed">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Promo Code Used</th><br>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;">
+                            {{row.promoCodeUsed}} </td>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="paymentMethod">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">Payment Method</th><br>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;">
+                            {{row.paymentMethod}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="pgName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> PG Name
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                            {{row.pgName}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="time">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Date
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                            {{row.time}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+                </mat-card>
+            </mat-card>
+           
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+
+   
+</div>
+
+<!-- USerDetails block -->
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">  
+    <p style="color: white">Please Wait. </p>  
+</ngx-spinner> 

@@ -1,0 +1,59 @@
+<div  class="modal"  style="overflow-y: scroll; display: block;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 >Find UserID</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                    (click)="sendCloseFindUserIDToBaseComponent()">&times;</button>
+            </div>
+            <form [formGroup]="searchParamUserForm">
+                <div class="form-group">
+                    <div class="border bg-light">
+                        <div class="row mx-md-n5">
+                            <div class="col px-md-5">
+                                <div class="p-3">
+                                    <div class="row">
+
+                                        <div class="col">
+                                            <select class="form-select form-control form-control-sm"
+                                                formControlName="search_type">
+                                                <option value="">--SELECT--</option>
+                                                <option value="Mobile">Mobile</option>
+                                                <option value="Email">Email</option>
+                                                <option value="dangalUser">Username</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control" placeholder=""
+                                                formControlName="value">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="getFindUserIDDetails()">Get
+                    UserID</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>

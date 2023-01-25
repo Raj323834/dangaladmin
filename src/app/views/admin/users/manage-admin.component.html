@@ -1,0 +1,257 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-body">
+      <mat-card >
+          <label>Sorry..!!  </label><br>
+          <label>You dont have access to this section.</label>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+  
+  <div class="card card-default">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <i class="fa fa-align-justify"></i> Admin User data
+        </div>
+        <div class="float-right" *ngIf="access_permission_write">
+          <button type="button" class="btn btn-success btn-sm btn-block" (click)="onAddUserClick()">Add New
+            User</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card-body">
+
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <mat-form-field>
+          <mat-label>Filter</mat-label>
+          <input matInput placeholder="" (keyup)="applyFilter($event)">
+        </mat-form-field>
+      </mat-card>
+      <br>
+      <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+        <div><span>No Data to Display</span></div>
+      </mat-card>
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" class="table table-borderless ">
+
+          <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+
+          <ng-container matColumnDef="user_id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px "> User ID
+            </th><br>
+            <td mat-cell *matCellDef="let row" class="mat-row" style=" cursor: pointer; color: royalblue;"
+            (click)="onUserIDLinkClick(row.user_id)"> {{row.user_id}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="roleId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Role ID</th><br>
+            <td mat-cell *matCellDef="let row" >
+              {{row.roleId}} </td>
+          </ng-container>
+          <ng-container matColumnDef="user_name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Name</th><br>
+            <td mat-cell *matCellDef="let row" >
+              {{row.user_name}} </td>
+          </ng-container>
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Email</th><br>
+            <td mat-cell *matCellDef="let row" >
+              {{row.email}} </td>
+          </ng-container>
+          <ng-container matColumnDef="mobile">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Mobile</th><br>
+            <td mat-cell *matCellDef="let row" >
+              {{row.mobile}} </td>
+          </ng-container>
+          <ng-container matColumnDef="created_at">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Created At</th><br>
+            <td mat-cell *matCellDef="let row" >
+              {{row.created_at| date: 'yyyy-MM-dd hh:mm:ss aa'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="updated_at">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Updated At</th><br>
+            <td mat-cell *matCellDef="let row" >
+              {{row.updated_at| date: 'yyyy-MM-dd hh:mm:ss aa'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="Reset">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;"> Reset
+            </th><br>
+            <td mat-cell *matCellDef="let row" >
+              <button  class="btn btn-outline-dark me-md-3"  type="button" data-dismiss="modal"
+              (click)="showResetConfirmationBox(row.user_id,row.user_name)">Reset Password</button>    
+            </td>
+        </ng-container>
+          <ng-container matColumnDef="Actions">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Action
+            </th><br>
+            <td mat-cell *matCellDef="let row" >
+              <div  *ngIf="access_permission_write">
+                <button *ngIf="!row.disabled" class="btn btn-danger me-md-3" type="button" data-dismiss="modal"
+                (click)="showConfirmBox(row.user_id)">Disable</button>    
+              </div>
+            </td>
+        </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        </table>
+      </mat-card>
+      <!-- <mat-paginator [length]="allData.length" [pageSize]="20"
+                        [pageSizeOptions]="[1,5, 10, 25, 100]"
+                        aria-label="Select page">
+              </mat-paginator> -->
+      <mat-card *ngIf="dataSource?.filteredData.length">
+        <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+        </mat-paginator>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<div class="modal"  [style.display]="showModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 *ngIf="isAddMode && !isConfirmBox">Add User</h5>
+        <h5 *ngIf="!isAddMode && !isConfirmBox">Update User</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+      </div>
+      <div *ngIf="isConfirmBox" class="modal-body">
+        <p>Are you sure you want to disable the user?</p>
+        <p>This action cannot be reverted</p>
+        <br>
+        <button type="button" class="btn btn-success" (click)="onDisable(userId)">Yes</button>
+        <button  type="button" class="btn btn-danger" (click)="closeModal()">No</button>
+      </div>
+      <div *ngIf="isAddMode && !isConfirmBox" class="modal-body">
+        <form [formGroup]="addForm">
+        <div class="row">
+          <div class="col">
+            <label for="exampleFormControlInput1" class="form-label">Name</label>
+            <input type="text" class="form-control" formControlName="name"  [ngModel]="modalData.name" [ngClass]="{ 'is-invalid': submitted && addFormControl.name.errors }" placeholder="Enter name">
+            <div *ngIf="submitted && addFormControl.name.errors" class="invalid-feedback">
+              <div *ngIf="addFormControl.name.errors.required">Name is required</div>
+          </div>
+          </div>
+          <div class="col">
+            <label for="exampleFormControlInput2" class="form-label">Phone</label>
+            <input type="text" class="form-control" formControlName="mobile"  [ngModel]="modalData.mobile" [ngClass]="{ 'is-invalid': submitted && addFormControl.mobile.errors }" placeholder="Enter phone">
+            <div *ngIf="submitted && addFormControl.mobile.errors" class="invalid-feedback">
+              <div *ngIf="addFormControl.mobile.errors.required">Phone # is required</div>
+              <div *ngIf="addFormControl.mobile.errors.pattern">Please, Enter 10 digit Phone #.</div>
+          </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label for="exampleFormControlInput1" class="form-label">Email</label>
+              <input type="text" class="form-control" formControlName="email"  [ngModel]="modalData.email" [ngClass]="{ 'is-invalid': submitted && addFormControl.email.errors }" placeholder="Enter email">
+              <div *ngIf="submitted && addFormControl.email.errors" class="invalid-feedback">
+                <div *ngIf="addFormControl.email.errors.required">Email is required</div>
+                <div *ngIf="addFormControl.email.errors.email">Enter valid email</div>
+                <div *ngIf="addFormControl.email.errors.pattern">Domain should be “dangalgames.com” ,  only “.” and “_” are allowed in the special symbols, minimum length should be 17</div>
+            </div>
+            </div>
+            <div class="col">
+              <label for="exampleFormControlInput2" class="form-label">Password</label>
+              <input type="text" type="password" class="form-control" formControlName="password"  [ngModel]="modalData.password" [ngClass]="{ 'is-invalid': submitted && addFormControl.password.errors }" placeholder="Enter password">
+              <div *ngIf="submitted && addFormControl.password.errors" class="invalid-feedback">
+                <div *ngIf="addFormControl.password.errors.required">Password is required</div>
+                <div *ngIf="addFormControl.password.errors.pattern"> Should contains atleast one special character, one digit, valid range must be 8-20</div>
+            </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="exampleFormControlInput1" class="form-label">Confirm Password</label>
+            <input type="text" type="password" class="form-control" formControlName="confirmPassword"  [ngModel]="modalData.confirmPassword" [ngClass]="{ 'is-invalid': submitted && addFormControl.confirmPassword.errors }" placeholder="Enter confirm password">
+            <div *ngIf="submitted && addFormControl.confirmPassword.errors" class="invalid-feedback">
+              <div *ngIf="addFormControl.confirmPassword.errors.required">Confirm password is required</div>
+              <div *ngIf="addFormControl.confirmPassword.errors.pattern"> Should contains atleast one special character, one digit, valid range must be 8-20</div>
+              <div *ngIf="addFormControl.confirmPassword.errors.notEquivalent">Password and Confirm password are not same</div>
+          </div>
+          </div>
+         
+          <div class="col">
+            <label for="exampleFormControlInput2" class="form-label">Role</label><br>
+            <mat-checkbox   [checked]="isRoleIncluded(role.role_id)" *ngFor="let role of allRoles;let i = index" class="form-check" [value]="role.role_id" (change)="onCheckboxClick($event)">{{role.role}}</mat-checkbox>
+            <div *ngIf="submitted && addFormControl.roleId.errors" class="invalid-feedback">
+              <div *ngIf="addFormControl.roleId.errors.required">Role is required</div>
+          </div>
+          </div>
+      </div>
+      <div class="form-group float-right">
+        <br>
+        <button [disabled]="loading" class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+        (click)="onSubmit()">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Save
+        </button>
+       <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="closeModal()">Close</button>
+   </div>
+    </form>
+      </div>
+    <div *ngIf="!isAddMode && !isConfirmBox" class="modal-body">
+      <form [formGroup]="updateForm">
+        <div class="row">
+          <div class="col">
+            <label for="exampleFormControlInput1" class="form-label">Name</label>
+            <input type="text" class="form-control" formControlName="name"  [ngModel]="modalData.name" placeholder="Enter name"
+               >
+          </div>
+          <div class="col">
+            <label for="exampleFormControlInput19" class="form-label">Role</label><br>
+            <mat-checkbox [checked]="isRoleIncluded(role.role_id)" *ngFor="let role of allRoles;let i = index" class="form-check" [value]="role.role_id" (change)="onCheckboxClick($event)">{{role.role}}</mat-checkbox>
+          </div>
+        </div>
+        <div class="form-group float-right">
+          <br>
+          <button [disabled]="loading" class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+          (click)="onSubmit()">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+          Save
+          </button>
+         <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="closeModal()">Close</button>
+     </div>
+      </form>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+  <div   class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      
+        <div class="modal-body">
+          <p style="white-space: pre-wrap">{{alert}}</p>
+          <p *ngIf="isUpdatedPassword" style="white-space: pre-wrap">Updated Password is : </p><p style="white-space: pre-wrap">{{updatedPassword}}</p>
+          <br>
+          <button  type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+  
+        </div>
+      
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="this.showResetConfirmBox" class="modal" [style.display]="showResetConfirmBox ? 'block' : 'none'">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-body">
+                <p>Are you sure you want to reset password for {{resetUsername}}?</p>
+               
+                <button type="button" class="btn btn-success" (click)="resetPassword(resetUserId)">Yes</button>
+                <button  type="button" class="btn btn-danger" (click)="closeResetConfirmationBox()">No</button>
+              </div>
+              </div>
+          </div>
+    
+    </div>

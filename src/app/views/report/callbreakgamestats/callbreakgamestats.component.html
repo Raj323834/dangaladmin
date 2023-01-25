@@ -1,0 +1,736 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i> Call Break Game Stats <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+                  <div class="col">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+                                        <div class="col">
+                                            <label  class="form-label">Game Id</label>
+                                            <input type="text" class="form-control" formControlName="gameId"
+                                                 placeholder="Game Id" [(ngModel)]="gameId" >
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">Table Id</label>
+
+                                            <input type="text"  class="form-control" formControlName="tableId"
+                                            placeholder="Table Id">
+                                        </div>
+
+                                        <div class="col">
+                                          <label  class="form-label">Player Id</label>
+                                          <input type="text" class="form-control" formControlName="playerId"
+                                               placeholder="playerId" required="playerId">
+                                               <h5><small  *ngIf="!searchParamsForm.controls['playerId'].valid && 
+                                                  searchParamsForm.controls['playerId']?.touched " style="color: red;"> Enter player Id, form date to till date  </small></h5>
+                                      </div>
+                                        <div class="col">
+                                            <label  class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label  class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                 placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getCallBreakGameStatsDetails()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> Report
+                </div>
+                <div class="col">
+                    <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button"
+                            (click)="exportAsXLSX()" style="float: right;">download</button> 
+                            <div *ngIf="showDownloadFromUrlButton">
+                                <a [href]="downloadUrl" [download]="download" style="font-weight: bold;color: green;">
+                                    Download
+                                  </a>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <mat-card *ngIf="!dataSource?.filteredData.length">
+
+            </mat-card>
+
+            <mat-card *ngIf="!showDownloadButton" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+            
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                    class="table table-borderless ">
+
+
+                    <ng-container matColumnDef="tableName" hidden>
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">Table Name
+                      </th><br>
+                      <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.tableName}}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="gameId">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">Game Id
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.gameId}}</td>
+                </ng-container>
+                <ng-container matColumnDef="tableId">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">Table Id
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" cursor: pointer; color: royalblue;padding-left: 5px;padding-right:5px"
+                    (click)="viewGameDetails(row)"> {{row.tableId}}</td>
+                </ng-container>
+                <ng-container matColumnDef="entryFee">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">Entry Fee
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.entryFee}}</td>
+                </ng-container>
+                <ng-container matColumnDef="rake">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">Rake
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.rake}}</td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">Status
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.status}}</td>
+                </ng-container>
+                <ng-container matColumnDef="startTime" hidden>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">Start Time
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.startTime  | slice:0:20}}</td>
+                </ng-container>
+                <ng-container matColumnDef="endTime" hidden>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">End Time
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.endTime | slice:0:20}}</td>
+                </ng-container>
+                <ng-container matColumnDef="noOfRounds" hidden>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px ;padding-left: 5px;padding-right:5px ">No Of Rounds
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" class="mat-row" style=" padding-left: 5px;padding-right:5px"> {{row.noOfRounds}}</td>
+                </ng-container>
+                <ng-container matColumnDef="round1">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                      style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Round 1
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                      <button type="button" data-bs-toggle="modal" class="btn btn-outline-dark btn-sm btn-block"
+                        style=" text-align: center;padding-left: 5px;padding-right:5px"
+                        (click)="getRoundDetail(row,'1')" >Round 1</button>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="round2">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                      style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px" > Round 2
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                      <button type="button" data-bs-toggle="modal" class="btn btn-outline-dark btn-sm btn-block"
+                        style=" text-align: center;padding-left: 5px;padding-right:5px"
+                        (click)="getRoundDetail(row,'2')" >Round 2</button>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="round3">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                      style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Round 3
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                      <button type="button" data-bs-toggle="modal" class="btn btn-outline-dark btn-sm btn-block"
+                        style=" text-align: center;padding-left: 5px;padding-right:5px"
+                        (click)="getRoundDetail(row,'3')" >Round 3</button>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="round4">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                      style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Round 4
+                    </th><br>
+                    <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                      <button type="button" data-bs-toggle="modal" class="btn btn-outline-dark btn-sm btn-block"
+                        style=" text-align: center;padding-left: 5px;padding-right:5px"
+                        (click)="getRoundDetail(row,4)" >Round 4</button>
+                    </td>
+                  </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+            </mat-card>
+ 
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+    <p>{{winners}}</p>
+
+  </div>
+
+ 
+
+  <!-- USerDetails block -->
+  <app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+
+
+  <app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+  </app-find-user>
+  
+
+
+<!-- Games View Details block -->
+<div class="modal" [style.display]="showModal ? 'block' : 'none'"style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="this.allData">Call Break Game stats  Detail</h5>
+          <button type="button" class="close" data-dismiss="modal" (click)="closeviewGameDetails()">&times;</button>
+        </div>
+        <div *ngIf="this.allData" class="modal-body px-5">
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Game Id</label>
+              <input type="text" class="form-control"   value={{this.allData.gameId}} readonly>
+            </div>
+            <div class="col">
+              <label  class="form-label">TableId</label>
+              <input type="text" class="form-control"   value={{this.allData.tableId}} readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label  class="form-label">Table Name</label>
+              <input type="text" class="form-control"  value={{this.allData.tableName}} readonly>
+            </div>
+            <div class="col">
+              <label class="form-label">Entry Fee</label>
+              <input type="text" class="form-control"  value={{this.allData.entryFee}} readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label  class="form-label">Rake</label>
+              <input type="text" class="form-control" value={{this.allData.rake}} readonly>
+            </div>
+            <div class="col">
+                <label  class="form-label">status</label>
+                <input type="text" class="form-control" value={{this.allData.status}} readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label  class="form-label">Start Time</label>
+              <input type="text" class="form-control" value={{this.allData.startTime}} readonly>
+            </div>
+            <div class="col">
+                <label  class="form-label">End Time</label>
+                <input type="text" class="form-control" value={{this.allData.endTime}} readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label  class="form-label">No Of Rounds</label>
+              <input type="text" class="form-control" value={{this.allData.noOfRounds}} readonly>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+
+
+        <label style="font-weight: 700;" >winners details</label> 
+        <table class="table table-bordered fixed">
+          <thead>
+            <tr>
+              <th>Winner no</th>
+              <th>Winner Name</th>
+              <th>Winning Amount</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let winners of winnersData; let i=index;">
+              <td>{{i+1}}</td>
+              <td>{{ winners.username }}</td>
+              <td>{{ winners.amount}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+    <div class="modal-footer">
+          <button  class="btn btn-primary me-md-3" type="button" data-dismiss="modal" (click)="closeviewGameDetails()">Close</button>
+    </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Games View DEtails block ends -->
+
+<!-- Games Round View Details block -->
+<div class="modal" style="width: 1200px;" [style.display]="showModalRound ? 'block' : 'none'"style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="this.intialCardsData">Call Break Game Round  Detail</h5>
+          <button type="button" class="close" data-dismiss="modal" (click)="closeRoundGameDetails()">&times;</button>
+        </div>
+        <div *ngIf="this.allData" class="modal-body px-5">
+
+
+
+        <label style="font-weight: 700;" >Intial Cards details</label> 
+      
+        <table class="table table-bordered fixed">
+          <thead>
+            <tr>
+         <!--    <th>Player Number</th> --> 
+              <th style="width: 100px;">Player Name</th>
+              <th style="width:100px">Bid Placed</th>
+              <th style="width:100px">Bid Achieved</th>
+              <th >Cards</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 100px;">{{intialCardsData[0].username }}</td>
+              <td style="width: 100px;">{{intialCardsData[0].bidPlaced}}</td>
+              <td style="width: 100px;">{{intialCardsData[0].bidAchieved}}</td>
+              <td ><h3>{{intialCards1}}</h3></td>
+            </tr>
+            <tr>
+              <td style="width: 100px;">{{intialCardsData[1].username }}</td>
+              <td style="width: 100px;">{{intialCardsData[1].bidPlaced}}</td>
+              <td style="width: 100px;">{{intialCardsData[1].bidAchieved}}</td>
+              <td ><h3>{{intialCards2}}</h3></td>
+            </tr>
+            <tr>
+              <td style="width: 100px;">{{intialCardsData[2].username }}</td>
+              <td style="width: 100px;">{{intialCardsData[2].bidPlaced}}</td>
+              <td style="width: 100px;">{{intialCardsData[2].bidAchieved}}</td>
+              <td ><h3>{{intialCards3}}</h3></td>
+            </tr>
+            <tr>
+              <td style="width: 100px;">{{intialCardsData[3].username }}</td>
+              <td style="width: 100px;">{{intialCardsData[3].bidPlaced}}</td>
+              <td style="width: 100px;">{{intialCardsData[3].bidAchieved}}</td>
+              <td ><h3>{{intialCards4}}</h3></td>
+            </tr>
+          </tbody>
+        </table>
+
+    <button style="width: 100%;"  (click)="unicharacter()" (click)="currentcardunicheracter()" (click)="Showplayerdatails()">played Cards details</button> 
+        
+        <div *ngIf="showplayedcard">
+          <table  class="table table-bordered fixed">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Hand No</th>
+                <th style="width: 80px;">Player Name</th>
+                <th style="width: 200px;">Timestamp</th>
+                <th style="width: 80px;">Played Card</th>
+                <th>cards</th>
+              </tr>
+            </thead>
+
+          <tr>
+            <td style="width: 50px;">1</td>
+            <td style="width: 80px;">{{ playedCardsData[0].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[0].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard1}}</h4></td>
+            <td ><h3>{{currentHand1}}</h3></td>
+          </tr>
+          <tr>
+            <td style="width: 50px;">2</td>
+            <td style="width: 80px;">{{ playedCardsData[1].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[1].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard2}}</h4></td>
+            <td ><h3>{{currentHand2}}</h3></td>
+          </tr>
+          <tr>
+            <td style="width: 50px;">3</td>
+            <td style="width: 80px;">{{ playedCardsData[2].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[2].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard3}}</h4></td>
+            <td ><h3>{{currentHand3}}</h3></td>
+          </tr>
+          <tr>
+            <td style="width: 50px;">4</td>
+            <td style="width: 80px;">{{ playedCardsData[3].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[3].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard4}}</h4></td>
+            <td ><h3>{{currentHand4}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">5</td>
+            <td style="width: 80px;">{{ playedCardsData[4].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[4].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard5}}</h4></td>
+            <td ><h3>{{currentHand5}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">6</td>
+            <td style="width: 80px;">{{ playedCardsData[5].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[5].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard6}}</h4></td>
+            <td ><h3>{{currentHand6}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">7</td>
+            <td style="width: 80px;">{{ playedCardsData[6].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[6].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard7}}</h4></td>
+            <td ><h3>{{currentHand7}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">8</td>
+            <td style="width: 80px;">{{ playedCardsData[7].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[7].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard8}}</h4></td>
+            <td ><h3>{{currentHand8}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">9</td>
+            <td style="width: 80px;">{{ playedCardsData[8].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[8].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard9}}</h4></td>
+            <td ><h3>{{currentHand9}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">10</td>
+            <td style="width: 80px;">{{ playedCardsData[9].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[9].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard10}}</h4></td>
+            <td ><h3>{{currentHand10}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">11</td>
+            <td style="width: 80px;">{{ playedCardsData[10].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[10].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard11}}</h4></td>
+            <td ><h3>{{currentHand11}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">12</td>
+            <td style="width: 80px;">{{ playedCardsData[11].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[11].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard12}}</h4></td>
+            <td ><h3>{{currentHand12}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">13</td>
+            <td style="width: 80px;">{{ playedCardsData[12].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[12].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard13}}</h4></td>
+            <td ><h3>{{currentHand13}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">14</td>
+            <td style="width: 80px;">{{ playedCardsData[13].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[13].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard14}}</h4></td>
+            <td ><h3>{{currentHand14}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">15</td>
+            <td style="width: 80px;">{{ playedCardsData[14].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[14].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard15}}</h4></td>
+            <td ><h3>{{currentHand15}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">16</td>
+            <td style="width: 80px;">{{ playedCardsData[15].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[15].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard16}}</h4></td>
+            <td ><h3>{{currentHand16}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">17</td>
+            <td style="width: 80px;">{{ playedCardsData[16].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[16].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard17}}</h4></td>
+            <td ><h3>{{currentHand17}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">18</td>
+            <td style="width: 80px;">{{ playedCardsData[17].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[17].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard18}}</h4></td>
+            <td ><h3>{{currentHand18}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">19</td>
+            <td style="width: 80px;">{{ playedCardsData[18].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[18].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard19}}</h4></td>
+            <td ><h3>{{currentHand19}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">20</td>
+            <td style="width: 80px;">{{ playedCardsData[19].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[19].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard20}}</h4></td>
+            <td ><h3>{{currentHand20}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">21</td>
+            <td style="width: 80px;">{{ playedCardsData[20].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[20].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard21}}</h4></td>
+            <td ><h3>{{currentHand21}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">22</td>
+            <td style="width: 80px;">{{ playedCardsData[21].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[21].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard22}}</h4></td>
+            <td ><h3>{{currentHand22}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">23</td>
+            <td style="width: 80px;">{{ playedCardsData[22].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[22].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard23}}</h4></td>
+            <td ><h3>{{currentHand23}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">24</td>
+            <td style="width: 80px;">{{ playedCardsData[23].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[23].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard24}}</h4></td>
+            <td ><h3>{{currentHand24}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">25</td>
+            <td style="width: 80px;">{{ playedCardsData[24].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[24].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard25}}</h4></td>
+            <td ><h3>{{currentHand25}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">26</td>
+            <td style="width: 80px;">{{ playedCardsData[25].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[25].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard26}}</h4></td>
+            <td ><h3>{{currentHand26}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">27</td>
+            <td style="width: 80px;">{{ playedCardsData[26].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[26].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard27}}</h4></td>
+            <td ><h3>{{currentHand27}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">28</td>
+            <td style="width: 80px;">{{ playedCardsData[27].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[27].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard28}}</h4></td>
+            <td ><h3>{{currentHand28}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">29</td>
+            <td style="width: 80px;">{{ playedCardsData[28].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[28].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard29}}</h4></td>
+            <td ><h3>{{currentHand29}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">30</td>
+            <td style="width: 80px;">{{ playedCardsData[29].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[29].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard30}}</h4></td>
+            <td ><h3>{{currentHand30}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">31</td>
+            <td style="width: 80px;">{{ playedCardsData[30].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[30].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard31}}</h4></td>
+            <td ><h3>{{currentHand31}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">32</td>
+            <td style="width: 80px;">{{ playedCardsData[31].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[31].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard32}}</h4></td>
+            <td ><h3>{{currentHand32}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">33</td>
+            <td style="width: 80px;">{{ playedCardsData[32].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[32].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard33}}</h4></td>
+            <td ><h3>{{currentHand33}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">34</td>
+            <td style="width: 80px;">{{ playedCardsData[33].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[33].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard34}}</h4></td>
+            <td ><h3>{{currentHand34}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">35</td>
+            <td style="width: 80px;">{{ playedCardsData[34].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[34].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard35}}</h4></td>
+            <td ><h3>{{currentHand35}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">36</td>
+            <td style="width: 80px;">{{ playedCardsData[35].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[35].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard36}}</h4></td>
+            <td ><h3>{{currentHand36}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">37</td>
+            <td style="width: 80px;">{{ playedCardsData[36].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[36].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard37}}</h4></td>
+            <td ><h3>{{currentHand37}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">38</td>
+            <td style="width: 80px;">{{ playedCardsData[37].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[37].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard38}}</h4></td>
+            <td ><h3>{{currentHand38}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">39</td>
+            <td style="width: 80px;">{{ playedCardsData[38].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[38].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard39}}</h4></td>
+            <td ><h3>{{currentHand39}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">40</td>
+            <td style="width: 80px;">{{ playedCardsData[39].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[39].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard40}}</h4></td>
+            <td ><h3>{{currentHand40}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">41</td>
+            <td style="width: 80px;">{{ playedCardsData[40].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[40].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard41}}</h4></td>
+            <td ><h3>{{currentHand41}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">42</td>
+            <td style="width: 80px;">{{ playedCardsData[41].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[41].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard42}}</h4></td>
+            <td ><h3>{{currentHand42}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">43</td>
+            <td style="width: 80px;">{{ playedCardsData[42].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[42].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard43}}</h4></td>
+            <td ><h3>{{currentHand43}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">44</td>
+            <td style="width: 80px;">{{ playedCardsData[43].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[43].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard44}}</h4></td>
+            <td ><h3>{{currentHand44}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">45</td>
+            <td style="width: 80px;">{{ playedCardsData[44].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[44].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard45}}</h4></td>
+            <td ><h3>{{currentHand45}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">46</td>
+            <td style="width: 80px;">{{ playedCardsData[45].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[45].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard46}}</h4></td>
+            <td ><h3>{{currentHand46}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">47</td>
+            <td style="width: 80px;">{{ playedCardsData[46].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[46].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard47}}</h4></td>
+            <td ><h3>{{currentHand47}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">48</td>
+            <td style="width: 80px;">{{ playedCardsData[47].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[47].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard48}}</h4></td>
+            <td ><h3>{{currentHand48}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">49</td>
+            <td style="width: 80px;">{{ playedCardsData[48].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[48].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard49}}</h4></td>
+            <td ><h3>{{currentHand49}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">50</td>
+            <td style="width: 80px;">{{ playedCardsData[49].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[49].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard50}}</h4></td>
+            <td ><h3>{{currentHand50}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">51</td>
+            <td style="width: 80px;">{{ playedCardsData[50].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[50].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard51}}</h4></td>
+            <td ><h3>{{currentHand51}}</h3></td>
+          </tr> <tr>
+            <td style="width: 50px;">52</td>
+            <td style="width: 80px;">{{ playedCardsData[51].username }}</td>
+            <td style="width: 200px;">{{ playedCardsData[51].timestamp }}</td>
+            <td style="width: 80px;"><h4>{{playedCard52}}</h4></td>
+            <td ><h3>{{currentHand52}}</h3></td>
+          </tr>
+    
+  
+        </table>
+        </div>
+              
+        
+
+     
+    <div class="modal-footer">
+          <button  class="btn btn-primary me-md-3" type="button" data-dismiss="modal" (click)="closeRoundGameDetails()">Close</button>
+    </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Games Round View DEtails block ends -->
+
+    <div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+
+              <div class="modal-body">
+                  <p style="white-space: pre-wrap">{{alert}}</p>
+                  <br>
+                  <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+              </div>
+
+          </div>
+      </div>
+  </div>
+
+
+
+
+ 
+
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+  </ngx-spinner>

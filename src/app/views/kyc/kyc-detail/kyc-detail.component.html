@@ -1,0 +1,446 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+  
+      </div>
+    </div>
+  </div>
+<div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>KYC Details <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+                <div class="col">
+                    <div class="float-right">
+                        <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+                            style="float: right;">Find UserID</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">User ID</label>
+                                            <input type="text" class="form-control" formControlName="user_id"
+                                                placeholder="user #" [(ngModel)]="userID" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">PAN</label>
+                                            <input type="text" class="form-control" formControlName="pan_num"
+                                                placeholder="pan number" />
+                                        </div>
+                                        <div class="col">
+                                            <label class=" form-label">Pan Status</label>
+
+                                            <div>
+                                                <select class="form-select form-control form-control-sm"
+                                                    formControlName="pan_status">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="INITIATED">INITIATED</option>
+                                                    <option value="APPROVED">APPROVED</option>
+                                                    <option value="INVALID_DOCUMENT">INVALID DOCUMENT</option>
+                                                    <option value="INVALID_IMAGE">INVALID IMAGE</option>
+                                                    <option value="INVALID_USER">INVALID USER</option>
+                                                    <option value="SERVER_ERROR">SERVER ERROR</option>
+                                                    <option value="INVALID_IMAGE_SIZE">INVALID IMAGE SIZE</option>
+                                                    <option value="PROFILE_MISMATCH">PROFILE MISMATCH</option>
+                                                    <option value="INVALID_REQUEST">INVALID REQUEST</option>
+                                                    <option value="INVALID_AADHAR">INVALID AADHAR</option>
+                                                    <option value="DUPLICATE_DOCUMENT">DUPLICATE DOCUMENT</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">AddID</label>
+                                            <input type="text" class="form-control" formControlName="add_num"
+                                                placeholder="address ID">
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">Add Status</label>
+                                            <div>
+                                                <select class="form-select form-control form-control-sm"
+                                                    formControlName="add_status">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="INITIATED">INITIATED</option>
+                                                    <option value="APPROVED">APPROVED</option>
+                                                    <option value="INVALID_DOCUMENT">INVALID DOCUMENT</option>
+                                                    <option value="INVALID_IMAGE">INVALID IMAGE</option>
+                                                    <option value="INVALID_USER">INVALID USER</option>
+                                                    <option value="SERVER_ERROR">SERVER ERROR</option>
+                                                    <option value="INVALID_IMAGE_SIZE">INVALID IMAGE SIZE</option>
+                                                    <option value="PROFILE_MISMATCH">PROFILE MISMATCH</option>
+                                                    <option value="INVALID_REQUEST">INVALID REQUEST</option>
+                                                    <option value="INVALID_AADHAR">INVALID AADHAR</option>
+                                                    <option value="DUPLICATE_DOCUMENT">DUPLICATE DOCUMENT</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">KYC Status</label>
+                                            <div>
+
+                                                <select class="form-select form-control form-control-sm"
+                                                    formControlName="kyc_status">
+                                                    <option value="">--SELECT--</option>
+                                                    <option value="MANUAL_APPROVAL">MANUAL APPROVAL</option>
+                                                    <option value="APPROVED">APPROVED</option>
+                                                    <option value="REJECTED">REJECTED</option>
+                                                    <option value="NOT_APPROVED">NOT APPROVED</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getKYCDetails()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> KYC Data
+                </div>
+                <div class="col">
+                    <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button"
+                            (click)="exportAsXLSX()" style="float: right;">download</button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-form-field>
+                    <mat-label>Filter</mat-label>
+                    <input matInput placeholder="" (keyup)="applyFilter($event)">
+                </mat-form-field>
+            </mat-card>
+            <br><br>
+            <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+                    <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+
+                    <ng-container matColumnDef="userId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> User ID
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" class="mat-row" style=" cursor: pointer; color: royalblue;"
+                            (click)="getUserDetail('userID',row.userId)"> {{row.userId}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="panNumber">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> PAN </th>
+                        <br>
+                        <td mat-cell *matCellDef="let row"
+                            [ngStyle]="{'color': isApproved(row.idResult)? 'green' : 'red' }"
+                            style="font-weight: 600; text-align: center;cursor: pointer;"
+                            (click)="onPanLinkClick(row.userId,row.panFileURL,row.documentType,row.panNumber,row.idResult,row.idReason)">
+                            {{row.panNumber}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="idReason">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> PAN Reason
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">
+                            {{row.idReason}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addressProofNumber">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Address
+                            Proof </th><br>
+                        <td mat-cell *matCellDef="let row"
+                            [ngStyle]="{'color': isApproved(row.addressResult)? 'green' : 'red' }"
+                            style=" text-align: center;font-weight:600;cursor: pointer;"
+                            (click)="onAddressLinkClick(row.userId,row.addressFrontFileURL,row.addressBackFileURL,row.addressProofType,row.addressProofNumber,row.addressResult,row.addressReason)">
+                            {{row.addressProofNumber}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addressProofType">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Address
+                            Proof Type </th><br>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;">
+                            {{row.addressProofType}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addressReason">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Address
+                            Proof Reason </th><br>
+                        <td mat-cell *matCellDef="let row" style="text-align: center;">
+                            {{row.addressReason}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="kycStatus">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> KYC Status
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                            {{row.kycStatus}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="createdAt">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Created At
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                            {{row.createdAt| date: 'yyyy-MM-dd hh:mm:ss aa'}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="updatedAt">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Updated At
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center;">
+                            {{row.updatedAt| date: 'yyyy-MM-dd hh:mm:ss aa'}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+            </mat-card>
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)">
+</app-user-detail>
+
+<div *ngIf="this.userModal" class="modal" [style.display]="showModal ? 'block' : 'none' " style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Details</h5>
+                <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="margin-bottom: auto;">
+                    <div class="col">
+                        <div class="col"></div>
+                        <div class="col"></div>
+                        <div class="col">
+                            <label class="form-label" style="font-weight: bold;">Document Type </label>
+                        </div>
+                        <div class="col">
+                            <p>{{documentType}}</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="col">
+                            <label class="form-label" style="font-weight: bold;">Document Number</label>
+                        </div>
+                        <div class="col">
+                            <p>{{documentNumber}}</p>
+                        </div>
+                        <div class="col"></div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="col">
+                        <div class="col">
+                            <label class="form-label" style="font-weight: bold;">Document Status</label>
+                        </div>
+                        <div class="col">
+                            <p>{{idResult}}</p>
+                        </div>
+                        <div class="col"></div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+
+                <br><br><br>
+                <div class="row">
+                    <div class="col">
+                        <div class="showBorder img-container">
+                            <img #image class="container-img-objfit2" id="frontimage" *ngIf="photoUrlFront"
+                                [src]="photoUrlFront" (click)="imageClicked(photoUrlFront)" />
+                            <br><br> <br><br>
+                            <button *ngIf="photoUrlFront" type="submit" (click)="rotateFrontImage('left')">Rotate
+                                Left</button>
+                            <button *ngIf="photoUrlFront" type="submit" (click)="rotateFrontImage('right')">Rotate
+                                Right</button>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="showBorder img-container">
+                            <img #image class="container-img-objfit2" id="backimage" *ngIf="photoUrlBack"
+                                [src]="photoUrlBack" (click)="imageClicked(photoUrlBack)" />
+                            <br><br> <br><br>
+                            <button *ngIf="photoUrlBack" type="submit" (click)="rotateBackImage('left')">Rotate
+                                Left</button>
+                            <button *ngIf="photoUrlBack" type="submit" (click)="rotateBackImage('right')">Rotate
+                                Right</button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom: auto ;">
+                    <div class="col">
+                        <div class="col"></div>
+                        <div class="col"></div>
+                        <div class="col">
+                            <label class="form-label" style="font-weight: bold;">Name</label>
+                        </div>
+                        <div class="col">
+                            <p>{{this.userModal.firstName}} {{this.userModal.middleName}}
+                                {{this.userModal.lastName}}</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="col">
+                            <label class="form-label" style="font-weight: bold;">Date of Birth</label>
+                        </div>
+                        <div class="col">
+                            <p>{{this.userModal.dob}}</p>
+                        </div>
+                        <div class="col"></div>
+                        <div class="col"></div>
+                    </div>
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <br><br>
+                <div *ngIf="ReasonAvailable" class="col">
+                    <div class="row">
+                        <label class="form-label">Last Approving/Declining Reason :--
+                        </label>
+                        <p> {{Reason}}</p>
+                    </div>
+
+                </div>
+                <div *ngIf="!noReasonFilled" class="row" style="margin-left: auto;margin-right: auto;">
+                    <label class="form-label" style="font-weight: bold;">Reason</label>
+                    <input type="text" class="form-control" [(ngModel)]="Reason" placeholder="Reason">
+                </div>
+
+                <div *ngIf="noReasonFilled" class="row" style="margin-left: auto;margin-right: auto;color: red;">
+                    <label class="form-label">Reason</label>
+                    <input class="invalid-feedback" type="text" class="form-control" [(ngModel)]="Reason"
+                        placeholder="Reason">
+                    <div style="font-size: x-small;">*Reason is required</div>
+                </div>
+                <br>
+
+
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col"> </div>
+                    <div class="col">
+                        <button  *ngIf="access_permission_write" class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+                            (click)="approveDocument(userId)">Approve</button>
+                    </div>
+                    <div class="col">
+                        <button  *ngIf="access_permission_write" class="btn btn-danger" type="button" data-dismiss="modal"
+                            (click)="declineDocument(userId)">Decline</button>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+
+
+                <br>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="this.biggerImage" class="modal" [style.display]="showModal ? 'block' : 'none' " style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="closeModalBig()">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col">
+                        <div class="showBorder img-container">
+                            <img #image class="container-img-objfit2" id="bigimage" *ngIf="BigPhotUrl"
+                                [src]="BigPhotUrl" />
+
+                        </div>
+                </div>
+
+                </div>
+                <br><br>
+                <button *ngIf="BigPhotUrl" type="submit" (click)="rotateBigImage('left')">Rotate Left</button>
+                <button *ngIf="BigPhotUrl" type="submit" (click)="rotateBigImage('right')">Rotate Right</button>
+                <br><br>
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col"> </div>
+                    <div class="col">
+                        <button class="btn btn-danger" type="button" data-dismiss="modal"
+                            (click)="closeModalBig()">Close</button>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+</ngx-spinner>

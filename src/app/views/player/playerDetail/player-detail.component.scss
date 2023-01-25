@@ -1,0 +1,56 @@
+.searchParamsForm {
+  em {
+    margin: auto;
+    font-weight: bold;
+    font-style: normal;
+  }
+  label {
+    margin-bottom: 2px;
+  }
+}
+.noData {
+  text-align: center;
+  font-weight: 600;
+}
+.mat-table.customtable {
+  th.mat-header-cell {
+    vertical-align: middle;
+    border: 1px solid #c8ced3;
+    padding: 10px;
+    .mat-sort-header-container {
+      justify-content: center;
+    }
+  }
+  .mat-row.userIdText {
+    cursor: pointer;
+    color: #1d7dea;
+  }
+  td.mat-cell {
+    padding: 10px;
+    border: 1px solid #c8ced3;
+    text-align: center;
+    vertical-align: middle;
+    &.mat-column-userName,
+    &.mat-column-kycVerified {
+      text-transform: capitalize;
+    }
+  }
+}
+
+#exampleModalToggle {
+  .modal-header {
+    background: #fbfafa;
+    h5 {
+      margin-bottom: 0;
+    }
+  }
+  label {
+    margin-bottom: 2px;
+  }
+}
+.infoModal {
+  .modal-footer {
+    border: 0;
+    justify-content: center;
+  }
+}

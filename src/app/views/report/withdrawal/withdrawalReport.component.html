@@ -1,0 +1,180 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+      
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read"  class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+
+                                        <div class="col">
+                                            <label  class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                 placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label  class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                 placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getWithdrawalReportDetails()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> Withdrawal Report
+                </div>
+                <div class="col">
+                    <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button" id="button-addon3"
+                            (click)="exportAsXLSX()" style="float: right;">download</button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-form-field>
+                    <mat-label>Filter</mat-label>
+                    <input matInput placeholder="" (keyup)="applyFilter($event)">
+                </mat-form-field>
+            </mat-card>
+            <br><br>
+            <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                    class="table table-borderless ">
+
+                    <ng-container matColumnDef="userId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> User ID
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" class="mat-row" style=" cursor: pointer; color: royalblue;"
+                            (click)="getUserDetail('userID',row.userId)"> {{row.userId}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="userName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Username</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.userName}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="internalReferenceNumber">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Internal Reference Number</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.internalReferenceNumber}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="paymentTransactionAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Payment Transaction Amount</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.paymentTransactionAmount}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="tdsAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            TDS Amount
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.tdsAmount}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="toBePaidAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                           Amount to be paid
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.toBePaidAmount}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="transactionStatusDescription">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">
+                            Transaction Status Description
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.transactionStatusDescription}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="nameMismatch">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">Name Mismatch
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.nameMismatch}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="isSuspicious">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">Is Suspicious
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.isSuspicious}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="fulfilledTime">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px">Fulfilled Date
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.fulfilledTime }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="withdrawalType">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px"> Withdrawal Type</th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; ">{{row.withdrawalType}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+            </mat-card>
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<!-- USerDetails block -->
+<app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+<!-- USerDetails block ends -->
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">  
+    <p style="color: white">Please Wait. </p>  
+</ngx-spinner> 

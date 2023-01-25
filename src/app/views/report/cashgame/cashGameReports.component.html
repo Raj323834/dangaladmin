@@ -1,0 +1,171 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read" class="animated fadeIn">
+  <div class="card card-default">
+      <div class="card-header">
+          <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+          <div class="card-header-actions">
+              <div class="col">
+                <div class="float-right">
+                    <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+                        style="float: right;">Find PlayerID</button>
+
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="card-body">
+
+          <div class="form-group">
+              <div class="border bg-light">
+                  <div class="row mx-md-n2">
+                      <div class="col px-md-2">
+                          <div class="p-3">
+                              <form [formGroup]="searchParamsForm">
+                                  <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Player ID</label>
+                                        <input type="text" class="form-control" formControlName="player_id"
+                                             placeholder="Player ID" [(ngModel)]="userID">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Game</label>
+                                        <div>
+                                            <select class="form-select form-control form-control-sm"
+                                                formControlName="game_name">
+                                                <option value="">--SELECT--</option>
+                                                <option value="Callbreak">Callbreak</option>
+                                                <option value="Pool">Pool</option>
+                                                <option value="Poker">Poker</option>
+                                                <option value="Fantasy">Fantasy</option>
+                                                <option value="Street Racer">Street Racer</option>
+                                                <option value="Fruit Split">Fruit Split</option>
+                                                <option value="Runner Number One">Runner Number 1</option>
+                                                <option value="Bubble Shooter">Bubble Shooter</option>
+                                                <option value="Knife Cut">Knife Cut</option>
+                                                <option value="Archery">Archery</option>
+                                                <option value="Rummy">Rummy</option>
+                                                <option value="Carrom">Carrom</option>
+                                                <option value="Candy Crush">Candy Crush</option>
+                                                <option value="Ludo">Ludo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                      <div class="col">
+                                          <label  class="form-label">From Date</label>
+                                          <input type="date" class="form-control" formControlName="fromTime"
+                                               placeholder="">
+                                      </div>
+
+                                      <div class="col">
+                                          <label class="form-label">To Date</label>
+                                          <input type="date" class="form-control" formControlName="toTime"
+                                               placeholder="">
+                                      </div>
+                                      <div class="col p-4">
+                                          <button type="button" class="btn btn-success float-right"
+                                              (click)="getCashGameReports()">Submit</button>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col">
+                                      </div>
+                                      <div class="col">
+                                    </div>
+
+
+                                      <div class="col">
+                                        <p style="color: red;justify-content: end;">*From Date and To Date should be from same month</p>
+
+                                            </div>
+                                            <div class="col">
+                                            </div>
+
+                                      <div class="col">
+
+                                      </div>
+
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="card card-default">
+      <div class="card-header">
+          <div class="row">
+              <div class="col">
+                  <i class="fa fa-align-justify"></i> Cash Game Reports
+              </div>
+              <div class="col">
+                  <div>
+                      <button *ngIf="showDownloadButton" class="btn btn-success" type="button" id="button-addon3"
+                          (click)="exportAsXLSX()" style="float: right;">download</button>
+
+                  </div>
+              </div>
+          </div>
+
+      </div>
+
+      <div class="card-body">
+
+          <!-- <mat-card *ngIf="dataSource?.filteredData.length">
+              <mat-form-field>
+                  <mat-label>Filter</mat-label>
+                  <input matInput placeholder="" (keyup)="applyFilter($event)">
+              </mat-form-field>
+          </mat-card> -->
+
+          <mat-card *ngIf="!showDownloadButton" style="margin-bottom: 5px">
+              <div><span>No Data to Display</span></div>
+          </mat-card>
+          <mat-card *ngIf="showDownloadButton" style="margin-bottom: 5px">
+            <div><span>Data is ready to download</span></div>
+        </mat-card>
+          <mat-card *ngIf="dataSource?.filteredData.length">
+
+          </mat-card>
+
+          <mat-card *ngIf="dataSource?.filteredData.length">
+              <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+              </mat-paginator>
+          </mat-card>
+      </div>
+  </div>
+</div>
+
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+
+<div  class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <p style="white-space: pre-wrap">{{alert}}</p>
+        <br>
+        <button  type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+      </div>
+
+      </div>
+    </div>
+  </div>
+  <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+  </ngx-spinner>

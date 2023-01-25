@@ -1,0 +1,117 @@
+<div *ngIf="!access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-body">
+            <mat-card>
+                <label>Sorry..!! </label><br>
+                <label>You dont have access to this section.</label>
+            </mat-card>
+
+        </div>
+    </div>
+</div>
+<div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Report <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                placeholder="">
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getSnapshotReportDetails()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i> Snapshot Report
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+            <div *ngIf="this.noData"><br><span>No Data to Display</span><br></div>
+            <div *ngIf="!this.noData" class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <div class="row">
+                        <p style="font: weight 700px;">Total Registration</p>
+                    </div>
+                    <div class="row">{{totalRegistration}}
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">New Depositors</div><br>
+                    <div class="row">{{newDepositors}}</div>
+                </div>
+                <div class="col">
+                    <div class="row">Total Deposit</div><br>
+                    <div class="row">{{totalDeposit}}</div>
+                </div>
+                <div class="col">
+                    <div class="row">Total Withdrawal</div><br>
+                    <div class="row">{{totalWithdrawal}}</div>
+                </div>
+                <div class="col">
+                    <div class="row">Total Rake</div><br>
+                    <div class="row">{{totalRake}}</div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+</ngx-spinner>

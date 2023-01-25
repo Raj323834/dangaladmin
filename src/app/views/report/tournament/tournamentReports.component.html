@@ -1,0 +1,313 @@
+<div *ngIf="!access_permission_read"class="animated fadeIn">
+    <div class="card card-default">
+      <div class="card-body">
+        <mat-card >
+            <label>Sorry..!!  </label><br>
+            <label>You dont have access to this section.</label>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="access_permission_read" class="animated fadeIn">
+    <div class="card card-default">
+        <div class="card-header">
+            <i class="fa fa-picture-o"></i>Poker Tournament Reports <span class="badge badge-info"></span>
+            <div class="card-header-actions">
+                  <div class="col">
+                    <div class="float-right">
+                        <button class="btn btn-success btn-sm btn-block" type="button" (click)="findUserModal()"
+                            style="float: right;">Find UserID</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <div class="border bg-light">
+                    <div class="row mx-md-n2">
+                        <div class="col px-md-2">
+                            <div class="p-3">
+                                <form [formGroup]="searchParamsForm">
+                                    <div class="row">
+
+                                        <div class="col">
+                                            <label  class="form-label">User ID</label>
+                                            <input type="text" class="form-control" formControlName="userId"
+                                                 placeholder="User ID" [(ngModel)]="userID" >
+                                        </div>
+                                    
+                                        <div class="col">
+                                            <label  class="form-label">From Date</label>
+                                            <input type="date" class="form-control" formControlName="fromTime"
+                                                placeholder="">
+                                                <h5><small  *ngIf="!searchParamsForm.controls['fromTime'].valid && 
+                                                    searchParamsForm.controls['fromTime']?.touched " style="color: red;">Enter From Time Here</small></h5>
+                                        </div>
+
+                                        <div class="col">
+                                            <label  class="form-label">To Date</label>
+                                            <input type="date" class="form-control" formControlName="toTime"
+                                                 placeholder="">
+                                                 <h5><small  *ngIf="!searchParamsForm.controls['toTime'].valid && 
+                                                    searchParamsForm.controls['toTime']?.touched " style="color: red;">Enter To Time Here</small></h5>
+                                        </div>
+                                        <div class="col p-4">
+                                            <button type="button" class="btn btn-success float-right"
+                                                (click)="getTournamentReportDetails()" [disabled]="!searchParamsForm.valid">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-align-justify"></i>Poker Tournament Reports
+                </div>
+                <div class="col">
+                    <div>
+                        <button *ngIf="showDownloadButton" class="btn btn-success" type="button"
+                            (click)="exportAsXLSX()" style="float: right;">download</button> 
+                            <div *ngIf="showDownloadFromUrlButton">
+                                <a [href]="downloadUrl" [download]="download" style="font-weight: bold;color: green;">
+                                    Download
+                                  </a>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <mat-card *ngIf="dataSource?.filteredData.length">
+
+            </mat-card>
+
+            <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+                <div><span>No Data to Display</span></div>
+            </mat-card>
+            <mat-card *ngIf="dataSource?.filteredData.length" class="overflow1" style="width: 1200px;">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                    class="table table-borderless ">
+                    
+                    <ng-container matColumnDef="playerName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Player Name
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.playerName}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="bountyWinAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Bounty Win Amount
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.bountyWinAmount}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="winAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Win Amount
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.winAmount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rank">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Rank
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.rank}} </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="buyIn">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> buy In
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.buyIn}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="entryFee">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Entry Fee
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.entryFee}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="roundsPlayed">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Rounds Played
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.roundsPlayed}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="rebuyInAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Rebuy In Amount
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.rebuyInAmount}} </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="rebuyEntryFee">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Rebuy Entry Fee
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.rebuyEntryFee}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addonAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Add on Amount
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.addonAmount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addonEntryFee">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Add on Entry Fee
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.addonEntryFee}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="bountyAmount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Bounty Amount
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.bountyAmount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="bountyEntryFee">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Bounty Entry Fee
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.bountyEntryFee}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalEntryFee">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Total Entry Fee
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.totalEntryFee}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="totalRake">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Total Rake
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.totalRake}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rebuyCount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Rebuy Count
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.rebuyCount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addOnCount">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Add On Count
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.addOnCount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="gameStartTime">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Game Start Time
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.gameStartTime}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="gameEndTime">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Game End Time
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.gameEndTime}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="timeStamp">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Time Stamp
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.timeStamp}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="totalPlayers">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Total Players
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.totalPlayers}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Name
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.name}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="tournamentId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Tournament Id
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.tournamentId}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalRounds">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Total Rounds
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.totalRounds}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="cash">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px;padding-left: 5px;padding-right:5px"> Cash
+                        </th><br>
+                        <td mat-cell *matCellDef="let row" style=" text-align: center; padding-left: 5px;padding-right:5px">
+                            {{row.cash}} </td>
+                    </ng-container>
+                   
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                  
+                </table>
+            </mat-card>
+ 
+            <mat-card *ngIf="dataSource?.filteredData.length">
+                <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+                </mat-paginator>
+            </mat-card>
+        </div>
+    </div>
+  </div>
+
+  <!-- USerDetails block -->
+  <app-user-detail *ngIf="showUserModal" [userModal]="userModal" (messageEvent)="receiveCloseModalMessage($event)"></app-user-detail>
+
+
+ 
+<app-find-user *ngIf="this.findUser" (messageEvent)="receiveFindUserIDCloseModalMessage($event)">
+</app-find-user>
+
+    <div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+
+              <div class="modal-body">
+                  <p style="white-space: pre-wrap">{{alert}}</p>
+                  <br>
+                  <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+              </div>
+
+          </div>
+      </div>
+  </div>
+  <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+    <p style="color: white">Please Wait. </p>
+</ngx-spinner>
+
+

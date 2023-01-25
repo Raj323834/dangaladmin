@@ -1,0 +1,1723 @@
+<div *ngIf="!access_permission_read && !access_permission_write "class="animated fadeIn">
+  <div class="card card-default">
+    <div class="card-body">
+      <mat-card >
+          <label>Sorry..!!  </label><br>
+          <label>You dont have access to this section.</label>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+<div *ngIf="access_permission_read || access_permission_write" class="animated fadeIn">
+
+  <div class="card card-default">
+      <div class="card-header">
+          <div class="row">
+              <div class="col">
+                  <i class="fa fa-align-justify"></i> Manage Role
+              </div>
+              <div class="col">
+                  <div class="float-right" *ngIf="access_permission_write">
+                      <button  class="btn btn-success btn-sm btn-block" type="button" 
+                          (click)="openRoleModal()" style="float: right;">Add role</button>
+
+                  </div>
+              </div>
+          </div>
+
+      </div>
+
+      <div class="card-body">
+
+          <mat-card *ngIf="dataSource?.filteredData.length">
+
+          </mat-card>
+
+          <mat-card *ngIf="!dataSource?.filteredData.length" style="margin-bottom: 5px">
+              <div><span>No Data to Display</span></div>
+          </mat-card>
+          <mat-card *ngIf="dataSource?.filteredData.length">
+
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" class="table table-borderless ">
+            <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+            <ng-container matColumnDef="role_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px "> Role ID</th><br>
+              <td mat-cell *matCellDef="let row" >{{row.role_id}} </td>
+            </ng-container>
+
+
+
+
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px "> Role</th><br>
+              <td mat-cell *matCellDef="let row" >
+                  {{row.role}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Actions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header style=" padding-bottom: 30px "> Action </th><br>
+              <td mat-cell *matCellDef="let row" >
+                <div>
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModalToggle2" class="btn btn-outline-dark btn-sm btn-block" (click)="onEditBtnClick(row.role_id)">Edit</button>
+                </div>
+
+            </td>
+          </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        </table>
+          </mat-card>
+
+          <mat-card *ngIf="dataSource?.filteredData.length">
+              <mat-paginator [pageSize]="40" [pageSizeOptions]="[40]" showFirstLastButtons aria-label="Select page">
+              </mat-paginator>
+          </mat-card>
+      </div>
+
+      <div *ngIf="this.roleIdData" class="modal" 
+      [style.display]="showEditModal ? 'block' : 'none'" style="overflow-y: scroll;">
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>Permissions</h5>
+            <button type="button" class="close" data-dismiss="modal" (click)="hideEditModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <label style="font-weight: bold;font-size: small;">
+              MANAGE ADMIN USERS
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2">Manage Roles </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=manageRolesPerm[0]
+                      (change)="onManageRolesCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=manageRolesPerm[1]
+                      (change)="onManageRolesCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Manage Admin Users </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=manageAdminUserPerm[0]
+                      (change)="onManageAdminCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=manageAdminUserPerm[1]
+                      (change)="onManageAdminCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label style="font-weight: bold;font-size: small;">
+             Misc Job
+            </label><br>
+            <!--Make entry in navigation  every Button created in misc. Job-->
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2"> Misc Job </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=miscJobPerm[0] (change)="onmiscJobCheckboxChange(0,$event)">READ
+                    </mat-checkbox>
+                   <!--
+                    <mat-checkbox class="form-check" [checked]=walletBackupPerm[1] (change)="onwalletBackupCheckboxChange(1,$event)">WRITE
+                    </mat-checkbox>
+                    -->
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2"> Wallet Backup </label>
+                  </div>
+                  <div class="col">
+                <!--    <mat-checkbox class="form-check" [checked]=walletBackupPerm[0] (change)="onwalletBackupCheckboxChange(0,$event)">READ
+                    </mat-checkbox>
+                    -->
+                   
+                    <mat-checkbox class="form-check" [checked]=walletBackupPerm[1] (change)="onwalletBackupCheckboxChange(1,$event)">WRITE
+                    </mat-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label style="font-weight: bold;font-size: small;">
+             COMPONENTS
+             </label><br>
+            <label style="font-weight: bold;font-size: small;">
+              kyc
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2">KYC </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=kycPerm[0] (change)="onKycCheckboxChange(0,$event)">READ
+                    </mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=kycPerm[1] (change)="onKycCheckboxChange(1,$event)">WRITE
+                    </mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">KYC Journey </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=kycjourneyPerm[0]
+                      (change)="onKycJourneyCheckboxChange(0,$event)">READ</mat-checkbox>
+                   </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Manual KYC </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=manualKYCPerm[0]
+                      (change)="onManualKYCCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=manualKYCPerm[1]
+                      (change)="onManualKYCCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col">
+
+              </div>
+
+            </div>
+            <label style="font-weight: bold;font-size: small;">
+              withdrawal
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Withdrawal </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=withdrawalPerm[0]
+                      (change)="onWithdrawCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=withdrawalPerm[1]
+                      (change)="onWithdrawCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Withdrawal Journey </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=withdrawaljourneyPerm[0]
+                      (change)="onWithdrawJourneyCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">ByPass User  </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=byPassUserReportPerm[0]
+                      (change)="onByPassUserReportCheckboxChange(0,$event)">READ</mat-checkbox>
+
+                      <mat-checkbox class="form-check" [checked]=byPassUserReportPerm[1]
+                      (change)="onByPassUserReportCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+
+            <br>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Update Balance</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=updateBalancePerm[0]
+                      (change)="onUpdateBalanceCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=updateBalancePerm[1]
+                      (change)="onUpdateBalanceCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Game Order</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=gameOrderPerm[0]
+                      (change)="onGameOrderCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=gameOrderPerm[1]
+                      (change)="onGameOrderCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Bonus</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=bonusPerm[0]
+                      (change)="onBonusCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=bonusPerm[1]
+                      (change)="onBonusCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2">Geo Restriction</label>
+                  </div>
+
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=geoRestrictionPerm[0]
+                      (change)="onGeoRestrictionCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=geoRestrictionPerm[1]
+                      (change)="onGeoRestrictionCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2" >Leaderboard </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=leaderboardPerm[0]
+                      (change)="onLeaderboardCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=leaderboardPerm[1]
+                      (change)="onLeaderboardCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2">Rummy </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=rummyPerm[0]
+                      (change)="onRummyCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=rummyPerm[1]
+                      (change)="onRummyCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Whitelist</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=whitelistPerm[0]
+                      (change)="onWhitelistCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=whitelistPerm[1]
+                      (change)="onWhitelistCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Tournament</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=tournamentReportPerm[0]
+                      (change)="onTournamentCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=tournamentReportPerm[1]
+                      (change)="onTournamentCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <label style="font-weight: bold;font-size: small;">
+              BANNER MANAGEMENT
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">Banner Management </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=bannerManagementPerm[0]
+                      (change)="onBannerManagementCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=bannerManagementPerm[1]
+                      (change)="onBannerManagementCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+              </div>
+            </div>
+           
+            <label style="font-weight: bold;font-size: small;">
+              Configuration Module
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">Configuration Module </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=incentivePerm[0]
+                      (change)="onIncentiveCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=incentivePerm[1]
+                      (change)="onIncentiveCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+              </div>
+            </div>
+
+            <label style="font-weight: bold;font-size: small;">
+              PLAYERS
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Lock User</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=lockUserPerm[0]
+                      (change)="onLockUserCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=lockUserPerm[1]
+                      (change)="onLockUserCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Get Player Details</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=getPlayerDetailsPerm[0]
+                      (change)="onGetPlayerDetailsCheckboxChange(0,$event)">READ</mat-checkbox>
+                      <mat-checkbox class="form-check" [checked]=getPlayerDetailsPerm[1]
+                      (change)="onGetPlayerDetailsCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Manual Registration</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=manualRegistrationPerm[0]
+                      (change)="onManualRegistrationCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=manualRegistrationPerm[1]
+                      (change)="onManualRegistrationCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Contact in Player detail</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=contactInPlayerDetailsPerm[0]
+                      (change)="onContactInPlayerDetailsCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=contactInPlayerDetailsPerm[1]
+                      (change)="onContactInPlayerDetailsCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Delete Player</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=deletePlayerPerm[0]
+                      (change)="onDeletePlayerCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=deletePlayerPerm[1]
+                      (change)="onDeletePlayerCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Fraud User</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=fraudUserPerm[0]
+                      (change)="onFraudUserCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=fraudUserPerm[1]
+                      (change)="onFraudUserCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <label style="font-weight: bold;font-size: small;">
+              REPORTS
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Overview Report</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=overviewReportPerm[0]
+                      (change)="onOverviewReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Withdrawal Report</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=withdrawalReportPerm[0]
+                      (change)="onWithdrawalReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                   
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Deposit Report</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=depositReportPerm[0]
+                      (change)="onDepositReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Cash Game Report</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=cashGameReportPerm[0]
+                      (change)="onCashGameReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Free Game Report</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=freeGameReportPerm[0]
+                      (change)="onFreeGameReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Daily Stats Report</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=dailyStatsReportPerm[0]
+                      (change)="onDailyStatsReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">RAF Report</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=rafReportPerm[0]
+                      (change)="onRafReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+
+                  <div class="row">
+                    <div class="col">
+                      <label   class="form-label2">Transaction History Report</label>
+                    </div>
+                    <div class="col">
+                      <mat-checkbox class="form-check" [checked]=transactionHistoryReportPerm[0]
+                        (change)="onTransactionHistoryReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">User Registration Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=userRegistrationPerm[0]
+                      (change)="onUserRegistrationCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+             
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2" >Admin Activity Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=adminActivityReportPerm[0]
+                      (change)="onAdminActivityCheckboxChange(0,$event)">READ</mat-checkbox>
+                   </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2">Suspicious Report </label>
+                  </div>
+
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=suspiciousReportPerm[0]
+                      (change)="onSuspiciousReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                   </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2">Fraud Report </label>
+                  </div>
+
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=fraudReportPerm[0]
+                      (change)="onFraudReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+             
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <label class="form-label2">Call Break Game Stats </label>
+                    </div>
+                    <div class="col">
+                      <mat-checkbox class="form-check" [checked]=callBreakGameStatsPerm[0]
+                        (change)="onCallBreakGameStatsCheckboxChange(0,$event)">READ</mat-checkbox>
+                     </div>
+                  </div>
+               
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">Leaderboard Winning </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=leaderboardWinningReportPerm[0]
+                      (change)="onLeaderboardWinningReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">Snapshot Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=snapshotReportPerm[0]
+                      (change)="onSnapshotReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">Poker Tournament Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=tournamentReportPerm[0]
+                      (change)="onPokerTournamentReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">Rummy Tournament Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=rummyTournamentReportPerm[0]
+                      (change)="onRummyTournamentReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">Opponent Played Together Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=opponentPlayedTogetherReportPerm[0]
+                      (change)="onOpponentPlayedTogetherReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label2">TDS Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=tdsReportPerm[0]
+                      (change)="onTdsReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  
+                </div>
+              </div>
+            </div>
+           
+           
+            <label style="font-weight: bold;">
+              Collusion Reports
+            </label>
+            <br>
+            <div class="row">
+
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2" >IP Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=ipReportPerm[0]
+                      (change)="onIPReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2" >Winning Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=winningReportPerm[0]
+                      (change)="onWinningReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                   </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2" >Hands Played Together Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=handsPlayedTogetherReportPerm[0]
+                      (change)="onhandsPlayedTogetherCheckboxChange(0,$event)">READ</mat-checkbox>
+                   </div>
+                </div>
+              </div>
+              <div class="col">
+                
+              </div>
+
+            </div>
+<br>
+            <label style="font-weight: bold;font-size: small;">
+              DG-POKER transfer Reports
+            </label>
+            <br>
+            <div class="row">
+
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2" >PokerToDg Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=pokerToDgReportPerm[0]
+                      (change)="onPokerToDgReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2" >DgToPoker Report </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=dgToPokerReportPerm[0]
+                      (change)="onDgToPokerReportCheckboxChange(0,$event)">READ</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+
+            </div>
+            <br>
+
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2"style="font-weight: bold;font-size: small;">CONTACT</label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=contactPerm[0]
+                      (change)="onContactCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=contactPerm[1]
+                      (change)="onContactCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+              </div>
+            </div>
+            <br>
+            <div class="modal-footer">
+              <button class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+                (click)="updateRole()">Save</button>
+              <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="hideEditModal()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal"  [style.display]="showCreateModal ? 'block' : 'none'"
+      style="overflow-y: scroll;">
+      <br>
+      <br>
+
+      <br>
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>Add New Role</h5>
+            <button *ngIf="access_permission_write" type="button" class="close" data-dismiss="modal" (click)="hideRoleModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <div class="row">
+                <form [formGroup]="createParamForm">
+                  <div class="col">
+                    <label  class="form-label">Role name</label>
+                    <input type="text" class="form-control"   [(ngModel)]=role_name placeholder="Role Name"
+                      formControlName="role_name">
+                  </div>
+                </form>
+              </div>
+            </div>
+            <br>
+
+            <label style="font-weight: bold;font-size: small;">
+              MANAGE ADMIN USERS
+            </label>
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label  class="form-label2">Manage Roles </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=manageRolesPerm[0]
+                      (change)="onManageRolesCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=manageRolesPerm[1]
+                      (change)="onManageRolesCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label   class="form-label2">Manage Admin Users </label>
+                  </div>
+                  <div class="col">
+                    <mat-checkbox class="form-check" [checked]=manageAdminUserPerm[0]
+                      (change)="onManageAdminCheckboxChange(0,$event)">READ</mat-checkbox>
+                    <mat-checkbox class="form-check" [checked]=manageAdminUserPerm[1]
+                      (change)="onManageAdminCheckboxChange(1,$event)">WRITE</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <label style="font-weight: bold;font-size: small;">
+              Misc Job
+             </label><br>
+             <div class="row">
+               <div class="col">
+                 <div class="row">
+                   <div class="col">
+                     <label  class="form-label2"> Misc Job </label>
+                   </div>
+                   <!--Make entry in navigation  every Button created in misc. Job-->
+                   <div class="col">
+                     <mat-checkbox class="form-check" [checked]=miscJobPerm[0] (change)="onmiscJobCheckboxChange(0,$event)">READ
+                     </mat-checkbox>
+                    <!--
+                     <mat-checkbox class="form-check" [checked]=walletBackupPerm[1] (change)="onwalletBackupCheckboxChange(1,$event)">WRITE
+                     </mat-checkbox>
+                     -->
+                   </div>
+                 </div>
+               </div>
+               <div class="col">
+                 <div class="row">
+                   <div class="col">
+                     <label  class="form-label2"> Wallet Backup </label>
+                   </div>
+                   <div class="col">
+                 <!--    <mat-checkbox class="form-check" [checked]=walletBackupPerm[0] (change)="onwalletBackupCheckboxChange(0,$event)">READ
+                     </mat-checkbox>
+                     -->
+                    
+                     <mat-checkbox class="form-check" [checked]=walletBackupPerm[1] (change)="onwalletBackupCheckboxChange(1,$event)">WRITE
+                     </mat-checkbox>
+                   </div>
+                 </div>
+               </div>
+             </div>
+      <label style="font-weight: bold;font-size: small;">
+        COMPONENTS
+      </label><br>
+      <label style="font-weight: bold;font-size: small;">
+        kyc
+      </label>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2">KYC </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=kycPerm[0] (change)="onKycCheckboxChange(0,$event)">READ
+              </mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=kycPerm[1] (change)="onKycCheckboxChange(1,$event)">WRITE
+              </mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">KYC Journey </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=kycjourneyPerm[0]
+                (change)="onKycJourneyCheckboxChange(0,$event)">READ</mat-checkbox>
+             </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Manual KYC </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=manualKYCPerm[0]
+                (change)="onManualKYCCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=manualKYCPerm[1]
+                (change)="onManualKYCCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+
+        </div>
+        <div class="col">
+
+        </div>
+
+      </div>
+      <label style="font-weight: bold;font-size: small;">
+        withdrawal
+      </label>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Withdrawal </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=withdrawalPerm[0]
+                (change)="onWithdrawCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=withdrawalPerm[1]
+                (change)="onWithdrawCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Withdrawal Journey </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=withdrawaljourneyPerm[0]
+                (change)="onWithdrawJourneyCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label class="form-label2">ByPass User  </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=byPassUserReportPerm[0]
+                (change)="onByPassUserReportCheckboxChange(0,$event)">READ</mat-checkbox>
+
+                <mat-checkbox class="form-check" [checked]=byPassUserReportPerm[1]
+                (change)="onByPassUserReportCheckboxChange(1,$event)">WRITE</mat-checkbox>
+              </div>
+          </div>
+        </div>
+        <div class="col">
+
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Update Balance</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=updateBalancePerm[0]
+                (change)="onUpdateBalanceCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=updateBalancePerm[1]
+                (change)="onUpdateBalanceCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Game Order</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=gameOrderPerm[0]
+                (change)="onGameOrderCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=gameOrderPerm[1]
+                (change)="onGameOrderCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Bonus</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=bonusPerm[0]
+                (change)="onBonusCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=bonusPerm[1]
+                (change)="onBonusCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2">Geo Restriction</label>
+            </div>
+
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=geoRestrictionPerm[0]
+                (change)="onGeoRestrictionCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=geoRestrictionPerm[1]
+                (change)="onGeoRestrictionCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2" >Leaderboard </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=leaderboardPerm[0]
+                (change)="onLeaderboardCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=leaderboardPerm[1]
+                (change)="onLeaderboardCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2">Rummy </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=rummyPerm[0]
+                (change)="onRummyCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=rummyPerm[1]
+                (change)="onRummyCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Whitelist</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=whitelistPerm[0]
+                (change)="onWhitelistCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=whitelistPerm[1]
+                (change)="onWhitelistCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Tournament</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=tournamentReportPerm[0]
+                (change)="onTournamentCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=tournamentReportPerm[1]
+                (change)="onTournamentCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <label style="font-weight: bold;font-size: small;">
+        BANNER MANAGEMENT
+      </label>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label class="form-label2">Banner Management </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=bannerManagementPerm[0]
+                (change)="onBannerManagementCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=bannerManagementPerm[1]
+                (change)="onBannerManagementCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+        </div>
+      </div>
+     
+      <label style="font-weight: bold;font-size: small;">
+        Configuration Module
+      </label>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label class="form-label2">Configuration Module </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=incentivePerm[0]
+                (change)="onIncentiveCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=incentivePerm[1]
+                (change)="onIncentiveCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+        </div>
+      </div>
+
+      <label style="font-weight: bold;font-size: small;">
+        PLAYERS
+      </label>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Lock User</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=lockUserPerm[0]
+                (change)="onLockUserCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=lockUserPerm[1]
+                (change)="onLockUserCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Get Player Details</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=getPlayerDetailsPerm[0]
+                (change)="onGetPlayerDetailsCheckboxChange(0,$event)">READ</mat-checkbox>
+                <mat-checkbox class="form-check" [checked]=getPlayerDetailsPerm[1]
+                (change)="onGetPlayerDetailsCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Manual Registration</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=manualRegistrationPerm[0]
+                (change)="onManualRegistrationCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=manualRegistrationPerm[1]
+                (change)="onManualRegistrationCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Contact in Player detail</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=contactInPlayerDetailsPerm[0]
+                (change)="onContactInPlayerDetailsCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=contactInPlayerDetailsPerm[1]
+                (change)="onContactInPlayerDetailsCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Delete Player</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=deletePlayerPerm[0]
+                (change)="onDeletePlayerCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=deletePlayerPerm[1]
+                (change)="onDeletePlayerCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Fraud User</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=fraudUserPerm[0]
+                (change)="onFraudUserCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=fraudUserPerm[1]
+                (change)="onFraudUserCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <label style="font-weight: bold;font-size: small;">
+        REPORTS
+      </label>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Overview Report</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=overviewReportPerm[0]
+                (change)="onOverviewReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Withdrawal Report</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=withdrawalReportPerm[0]
+                (change)="onWithdrawalReportCheckboxChange(0,$event)">READ</mat-checkbox>
+             
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Deposit Report</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=depositReportPerm[0]
+                (change)="onDepositReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Cash Game Report</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=cashGameReportPerm[0]
+                (change)="onCashGameReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Free Game Report</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=freeGameReportPerm[0]
+                (change)="onFreeGameReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">Daily Stats Report</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=dailyStatsReportPerm[0]
+                (change)="onDailyStatsReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">RAF Report</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=rafReportPerm[0]
+                (change)="onRafReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+
+            <div class="row">
+              <div class="col">
+                <label   class="form-label2">Transaction History Report</label>
+              </div>
+              <div class="col">
+                <mat-checkbox class="form-check" [checked]=transactionHistoryReportPerm[0]
+                  (change)="onTransactionHistoryReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2">User Registration Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=userRegistrationPerm[0]
+                (change)="onUserRegistrationCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+       
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2" >Admin Activity Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=adminActivityReportPerm[0]
+                (change)="onAdminActivityCheckboxChange(0,$event)">READ</mat-checkbox>
+             </div>
+          </div>
+        </div>
+
+      </div>
+      
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2">Suspicious Report </label>
+            </div>
+
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=suspiciousReportPerm[0]
+                (change)="onSuspiciousReportCheckboxChange(0,$event)">READ</mat-checkbox>
+             </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2">Fraud Report </label>
+            </div>
+
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=fraudReportPerm[0]
+                (change)="onFraudReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+       
+          <div class="col">
+            <div class="row">
+              <div class="col">
+                <label class="form-label2">Call Break Game Stats </label>
+              </div>
+              <div class="col">
+                <mat-checkbox class="form-check" [checked]=callBreakGameStatsPerm[0]
+                  (change)="onCallBreakGameStatsCheckboxChange(0,$event)">READ</mat-checkbox>
+               </div>
+            </div>
+         
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label class="form-label2">Leaderboard Winning </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=leaderboardWinningReportPerm[0]
+                (change)="onLeaderboardWinningReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label class="form-label2">Snapshot Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=snapshotReportPerm[0]
+                (change)="onSnapshotReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label class="form-label2">Poker Tournament Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=tournamentReportPerm[0]
+                (change)="onPokerTournamentReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label class="form-label2">Rummy Tournament Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=rummyTournamentReportPerm[0]
+                (change)="onRummyTournamentReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+        <div class="col">
+        <div class="row">
+          <div class="col">
+            <label class="form-label2">Opponent Played Together Report </label>
+          </div>
+          <div class="col">
+            <mat-checkbox class="form-check" [checked]=opponentPlayedTogetherReportPerm[0]
+              (change)="onOpponentPlayedTogetherReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="row">
+          <div class="col">
+            <label class="form-label2">TDS Report </label>
+          </div>
+          <div class="col">
+            <mat-checkbox class="form-check" [checked]=tdsReportPerm[0]
+              (change)="onTdsReportCheckboxChange(0,$event)">READ</mat-checkbox>
+            </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="row">
+          
+        </div>
+      </div>
+    </div>
+   
+     
+      <label style="font-weight: bold;">
+        Collusion Reports
+      </label>
+      <br>
+      <div class="row">
+
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2" >IP Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=ipReportPerm[0]
+                (change)="onIPReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2" >Winning Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=winningReportPerm[0]
+                (change)="onWinningReportCheckboxChange(0,$event)">READ</mat-checkbox>
+             </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2" >Hands Played Together Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=handsPlayedTogetherReportPerm[0]
+                (change)="onhandsPlayedTogetherCheckboxChange(0,$event)">READ</mat-checkbox>
+             </div>
+          </div>
+        </div>
+        <div class="col">
+          
+        </div>
+
+      </div>
+<br>
+      <label style="font-weight: bold;font-size: small;">
+        DG-POKER transfer Reports
+      </label>
+      <br>
+      <div class="row">
+
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2" >PokerToDg Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=pokerToDgReportPerm[0]
+                (change)="onPokerToDgReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label  class="form-label2" >DgToPoker Report </label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=dgToPokerReportPerm[0]
+                (change)="onDgToPokerReportCheckboxChange(0,$event)">READ</mat-checkbox>
+              </div>
+          </div>
+        </div>
+
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label   class="form-label2"style="font-weight: bold;font-size: small;">CONTACT</label>
+            </div>
+            <div class="col">
+              <mat-checkbox class="form-check" [checked]=contactPerm[0]
+                (change)="onContactCheckboxChange(0,$event)">READ</mat-checkbox>
+              <mat-checkbox class="form-check" [checked]=contactPerm[1]
+                (change)="onContactCheckboxChange(1,$event)">WRITE</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+        </div>
+      </div>
+
+
+            
+            <br>
+            <br>
+            <div class="modal-footer">
+              <button class="btn btn-primary me-md-3" type="button" data-dismiss="modal"
+                (click)="createRoleModal()">Save</button>
+              <button class="btn btn-danger" type="button" data-dismiss="modal" (click)="hideRoleModal()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal" [style.display]="showAlertModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="white-space: pre-wrap">{{alert}}</p>
+                <br>
+                <button type="button" class="btn btn-primary me-md-3" (click)="closeAlertModal()">OK</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
